@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Threat Modeler</title>
+<style>
+  :root {
+    --paper:#eef1f4; --surface:#fff; --ink:#182230; --muted:#657181; --line:#d5dbe3;
+    --accent:#b3261e; --blue:#245aa8; --success:#176b49; --soft:#f7f8fa;
+    --sans:system-ui,-apple-system,"Segoe UI",sans-serif; --mono:ui-monospace,"SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font:1rem/1.5 var(--sans)}
+  main{max-width:76rem;margin:0 auto;padding:2.5rem 1.25rem 4rem} h1{margin:0;font-size:2.4rem;letter-spacing:-.035em}
+  h2{margin:0 0 .3rem;font-size:1.15rem}.lead{margin:.4rem 0 0;color:var(--muted);max-width:65ch}
+  .pipeline{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin:1.7rem 0 2rem;color:var(--muted);font-size:.86rem}
+  .step{padding:.4rem .65rem;background:var(--surface);border:1px solid var(--line);border-radius:.35rem}.arrow{color:#8a94a2}
+  form{display:grid;grid-template-columns:22rem 1fr;gap:1rem}.panel{background:var(--surface);border:1px solid var(--line);border-radius:.65rem;padding:1.2rem}
+  .section-title{display:flex;gap:.65rem;align-items:center;margin-bottom:1rem}.number{display:grid;place-items:center;width:1.8rem;height:1.8rem;
+    border-radius:.4rem;background:var(--ink);color:#fff;font-weight:700;font-size:.85rem}
+  label.field{display:grid;gap:.35rem;margin:.9rem 0;font-size:.84rem;font-weight:650}input:not([type=file]){width:100%;padding:.62rem .7rem;
+    border:1px solid var(--line);border-radius:.4rem;color:var(--ink);background:#fff;font:.86rem var(--mono)}
+  input:focus{outline:2px solid #245aa833;outline-offset:1px;border-color:var(--blue)}
+  .hint{font-size:.78rem;color:var(--muted);font-weight:400}.drop{position:relative;display:grid;place-content:center;justify-items:center;gap:.45rem;
+    min-height:18rem;padding:1.5rem;text-align:center;cursor:pointer;border:2px dashed var(--accent);border-radius:.8rem;background:#b3261e08}
+  .drop.over{background:#b3261e12;border-style:solid}.drop input{position:absolute;opacity:0;pointer-events:none}.drop strong{font-size:1.15rem}
+  .drop small,.drop output{color:var(--muted);font-size:.83rem}.drop output{font-family:var(--mono)}.drop img{max-width:100%;max-height:15rem;
+    background:#fff;border:1px solid var(--line);border-radius:.4rem}.upload-mark{font-size:2.2rem;color:var(--accent);line-height:1}
+  button{width:100%;margin-top:1rem;padding:.7rem 1rem;border:0;border-radius:.4rem;background:var(--ink);color:#fff;font:650 1rem var(--sans);cursor:pointer}
+  button:hover{background:#263548}button:disabled{background:#7d8794;cursor:progress}.message{min-height:1.5rem;margin:1rem 0 0;color:var(--muted)}
+  .message.error{color:var(--accent);font-weight:650}.running .arrow{color:var(--accent)}
+  #result{margin-top:1rem}.success{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1rem;margin-bottom:1rem;
+    background:#eaf5ef;border:1px solid #b8ddc9;border-radius:.65rem;color:var(--success)}.success strong{display:block}.success small{color:#47715e}
+  .files-panel{margin-bottom:1rem}.files-head{display:flex;justify-content:space-between;gap:1rem;align-items:end;margin-bottom:1rem}.files-head p{margin:0;color:var(--muted);font-size:.85rem}
+  #files{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}.file-card{display:grid;gap:.35rem;padding:.85rem;background:var(--soft);
+    border:1px solid var(--line);border-radius:.5rem}.file-card b{font-size:.92rem}.file-card code{font-size:.76rem;color:var(--muted);overflow-wrap:anywhere}
+  .file-card small{color:var(--muted)}.file-card a{margin-top:.3rem;padding:.45rem .6rem;text-align:center;text-decoration:none;border:1px solid var(--ink);
+    border-radius:.35rem;color:var(--ink);font-weight:650;font-size:.83rem}.file-card a:hover{background:var(--ink);color:#fff}
+  .report-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:.8rem}.report-head a{color:var(--blue);font-size:.85rem;text-decoration:none}
+  iframe{display:block;width:100%;height:78vh;background:#fff;border:1px solid var(--line);border-radius:.65rem}
+  @media(max-width:54rem){form{grid-template-columns:1fr}#files{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:36rem){main{padding:1.5rem .8rem 3rem}h1{font-size:2rem}.pipeline{display:none}#files{grid-template-columns:1fr}.success{align-items:flex-start;flex-direction:column}}
+</style>
+
+<main>
+  <h1>Threat Modeler</h1>
+  <p class="lead">Modelado de amenazas automático a partir de un diagrama de arquitectura.</p>
+
+  <div class="pipeline" aria-label="Flujo del análisis">
+    <span class="step">Diagrama</span><span class="arrow">→</span><span class="step">1 · Componentes</span>
+    <span class="arrow">→</span><span class="step">2 · Amenazas</span><span class="arrow">→</span>
+    <span class="step">3 · Controles</span><span class="arrow">→</span><span class="step">4 · Informe</span>
+  </div>
+
+  <form id="form">
+    <section class="panel">
+      <div class="section-title"><span class="number">1</span><div><h2>Configuración</h2><span class="hint">Servicio y modelo que realizarán el análisis.</span></div></div>
+      <label class="field">URL del LLM
+        <input name="url" type="url" required value="http://localhost:11434/v1">
+        <span class="hint">Base URL compatible con OpenAI, por ejemplo <code>/v1</code>.</span>
+      </label>
+      <label class="field">Modelo con visión
+        <input name="model" required placeholder="nombre-del-modelo">
+      </label>
+      <label class="field">API key <span class="hint">(opcional)</span>
+        <input name="key" type="password" autocomplete="off" placeholder="Déjala vacía si no hace falta">
+      </label>
+      <button>Analizar diagrama</button>
+    </section>
+
+    <section class="panel">
+      <div class="section-title"><span class="number">2</span><div><h2>Diagrama de arquitectura</h2><span class="hint">PNG, JPG o WebP · máximo 20 MB.</span></div></div>
+      <label class="drop" id="drop">
+        <input name="image" type="file" required accept="image/png,image/jpeg,image/webp">
+        <span class="upload-mark" id="upload-mark">⇧</span>
+        <img id="preview" alt="Vista previa del diagrama" hidden>
+        <strong id="drop-title">Arrastra aquí el diagrama</strong>
+        <output id="filename"></output>
+        <small id="drop-help">o haz clic para elegirlo</small>
+      </label>
+    </section>
+  </form>
+
+  <p id="message" class="message" role="status"></p>
+
+  <section id="result" hidden>
+    <div class="success">
+      <div><strong>✓ Análisis completado</strong><small>Los cuatro procesos finalizaron correctamente.</small></div>
+      <div id="elapsed"></div>
+    </div>
+
+    <section class="panel files-panel">
+      <div class="files-head"><div><h2>Ficheros generados</h2><p>Descarga cada artefacto del análisis.</p></div><small id="file-count"></small></div>
+      <div id="files"></div>
+    </section>
+
+    <section class="panel">
+      <div class="report-head"><div><h2>Informe final</h2><span class="hint">Vista renderizada de <code>4_threat_model.md</code>.</span></div><a id="open-report" target="_blank">Abrir en nueva pestaña ↗</a></div>
+      <iframe id="report" sandbox title="Informe de modelado de amenazas"></iframe>
+    </section>
+  </section>
+</main>
+
+<script>
+  const form = document.getElementById("form");
+  const drop = document.getElementById("drop");
+  const picker = form.elements.image;
+  const message = document.getElementById("message");
+  const result = document.getElementById("result");
+  const labels = {
+    "1_components.json": ["Arquitectura", "Componentes y flujos"],
+    "2_threats.json": ["Amenazas", "Análisis STRIDE"],
+    "3_mappings.json": ["Controles", "Mapeo y mitigaciones"],
+    "4_threat_model.md": ["Informe", "Documento final Markdown"]
+  };
+
+  function say(text, error=false){message.textContent=text;message.classList.toggle("error",error)}
+  function size(bytes){return bytes < 1024 ? `${bytes} B` : `${(bytes/1024).toFixed(1)} KB`}
+  function duration(seconds){const s=Math.round(seconds);return s<60?`${s} s`:`${Math.floor(s/60)} min ${s%60} s`}
+  function showPreview(){
+    const file=picker.files[0], preview=document.getElementById("preview");
+    preview.hidden=!file; document.getElementById("upload-mark").hidden=Boolean(file);
+    document.getElementById("drop-title").textContent=file?"Diagrama seleccionado":"Arrastra aquí el diagrama";
+    document.getElementById("filename").textContent=file?file.name:"";
+    document.getElementById("drop-help").textContent=file?`${size(file.size)} · arrastra otro o haz clic para cambiarlo`:`o haz clic para elegirlo`;
+    if(file) preview.src=URL.createObjectURL(file);
+  }
+  picker.addEventListener("change",showPreview);
+  for(const type of ["dragover","drop"]) window.addEventListener(type,e=>e.preventDefault());
+  drop.addEventListener("dragover",()=>drop.classList.add("over"));
+  drop.addEventListener("dragleave",()=>drop.classList.remove("over"));
+  drop.addEventListener("drop",event=>{
+    drop.classList.remove("over"); const file=event.dataTransfer.files[0];
+    if(!file||!picker.accept.split(",").includes(file.type)) return say("Usa una imagen PNG, JPG o WebP.",true);
+    picker.files=event.dataTransfer.files; say(""); showPreview();
+  });
+
+  form.addEventListener("submit",async event=>{
+    event.preventDefault(); const data=new FormData(form), button=form.querySelector("button");
+    button.disabled=true; result.hidden=true; document.body.classList.add("running");
+    say("Analizando el diagrama. Un modelo local puede tardar varios minutos…");
+    try{
+      const response=await fetch("/analyze",{method:"POST",body:data.get("image"),headers:{
+        "X-LLM-URL":data.get("url"),"X-LLM-Model":data.get("model"),"X-LLM-Key":data.get("key")}});
+      const answer=await response.json(); if(!response.ok) throw new Error(answer.error);
+      const cards=answer.files.map(file=>{
+        const [title,desc]=labels[file.name]||[file.name,""]; const card=document.createElement("div"); card.className="file-card";
+        const url=`/${answer.run}/${file.name}`;
+        card.innerHTML=`<b>${title}</b><code>${file.name}</code><small>${desc} · ${size(file.size)}</small><a href="${url}" download>Descargar ↓</a>`;
+        return card;
+      });
+      document.getElementById("files").replaceChildren(...cards);
+      document.getElementById("file-count").textContent=`${answer.files.length} ficheros`;
+      document.getElementById("elapsed").textContent=`Procesado en ${duration(answer.elapsed)}`;
+      const report=`/${answer.run}/4_threat_model.html`;
+      document.getElementById("report").src=report; document.getElementById("open-report").href=report;
+      result.hidden=false; say(""); result.scrollIntoView({behavior:"smooth"});
+    }catch(error){say(`No se pudo analizar el diagrama: ${error.message}`,true)}
+    finally{button.disabled=false;document.body.classList.remove("running")}
+  });
+</script>
+</html>
