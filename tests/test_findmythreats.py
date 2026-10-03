@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import threat_modeler as tm
+import findmythreats as tm
 
 ARCHITECTURE = {
     "components": [
@@ -46,7 +46,7 @@ def fake_chat(answers):
     return chat
 
 
-class ThreatModelerTests(unittest.TestCase):
+class FindMyThreatsTests(unittest.TestCase):
     def test_control_catalog(self):
         controls = tm.load_controls()
         self.assertEqual(15, len(controls))
@@ -66,7 +66,7 @@ class ThreatModelerTests(unittest.TestCase):
             tm.validate_threats(bad_threats, ARCHITECTURE)
 
         bad_mappings = {"mappings": [{**MAPPINGS["mappings"][0], "control_ids": ["INVENTADO"]}, MAPPINGS["mappings"][1]]}
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, "INVENTADO"):
             tm.validate_mappings(bad_mappings, THREATS["threats"], tm.load_controls())
 
     def test_pipeline_and_retry(self):
@@ -92,6 +92,49 @@ class ThreatModelerTests(unittest.TestCase):
             self.assertIn("| T1 | Frontend → Backend | Information Disclosure |", report)
             self.assertIn("| T1 | TRANS-001 | Usar TLS. |", report)
             self.assertIn("| SEC-003 | Manejo de secretos |", report)
+
+    def test_custom_control_catalog_with_required_fields_only(self):
+        custom_controls = [
+            {
+                "id": "CUSTOM-001",
+                "category": "Custom",
+                "name": "Example control",
+                "description": "A minimal custom control.",
+            }
+        ]
+        custom_mappings = {
+            "mappings": [
+                {"threat_id": "T1", "control_ids": ["CUSTOM-001"], "recommendation": "Apply the control."},
+                {"threat_id": "T2", "control_ids": ["CUSTOM-001"], "recommendation": "Apply the control."},
+            ]
+        }
+        answers = {
+            "architecture": json.dumps(ARCHITECTURE),
+            "threats": json.dumps(THREATS),
+            "mappings": json.dumps(custom_mappings),
+        }
+
+        with tempfile.TemporaryDirectory() as folder, mock.patch.object(tm.LLM, "chat", fake_chat(answers)):
+            root = Path(folder)
+            controls_file = root / "custom.json"
+            controls_file.write_text(json.dumps(custom_controls), encoding="utf-8")
+            image = root / "diagram.png"
+            image.write_bytes(b"\x89PNG")
+            out = root / "out"
+
+            code = tm.main([
+                str(image), "--model", "test", "--controls", str(controls_file), "--out-dir", str(out)
+            ])
+            self.assertEqual(0, code)
+
+            loaded = tm.load_controls(controls_file)
+            self.assertEqual("", loaded[0]["implementation"])
+            self.assertEqual([], loaded[0]["references"])
+            self.assertEqual([], loaded[0]["stride"])
+
+            report = (out / "4_threat_model.md").read_text("utf-8")
+            self.assertIn("`custom.json`", report)
+            self.assertIn("CUSTOM-001", report)
 
     def test_web_markdown_renderer_escapes_html(self):
         import web

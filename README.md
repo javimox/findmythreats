@@ -5,6 +5,7 @@ AI-assisted threat modeling from architecture diagrams.
 FindMyThreats analyzes architecture diagrams with a multimodal LLM and turns them into structured threat models.
 
 The process is divided into four steps:
+
 1. extract components and data flows;
 2. identify threats using STRIDE;
 3. map threats to a fixed security-control catalog;
@@ -12,6 +13,7 @@ The process is divided into four steps:
 
 An LLM with vision capabilities (VLM) is required for processing the diagrams.  
 FindMyThreats talks to any endpoint that exposes the Chat Completions API:
+
   * Cloud providers such as Anthropic or OpenAI
   * Local servers such as Ollama, LM Studio, or vLLM.
 
@@ -40,7 +42,7 @@ The API key is used only for the request and is **never written to disk**. The s
 FindMyThreats can also be used from the command line, making it easy to integrate into CI/CD pipelines.
 
 ```bash
-python threat_modeler.py input/architecture.png \
+python findmythreats.py input/architecture.png \
   --base-url http://localhost:11434/v1 \
   --model model-name
 ```
@@ -48,7 +50,7 @@ python threat_modeler.py input/architecture.png \
 If the provider requires an API key:
 
 ```bash
-python threat_modeler.py input/architecture.png \
+python findmythreats.py input/architecture.png \
   --base-url https://service.example/v1 \
   --model model-name \
   --api-key '...'
@@ -58,7 +60,7 @@ python threat_modeler.py input/architecture.png \
 
 ## Generated files
 
-CLI runs write their result to `output/<diagram-name>/`, or to the directory given with `--out-dir`.  
+CLI runs write their results to `output/<diagram-name>/`, or to the directory given with `--out-dir`.
 Web runs create their own directory under `output/`.
 
 Each analysis generates:
@@ -74,7 +76,7 @@ Web runs also keep the uploaded diagram and a `4_threat_model.html` copy of the 
 
 ## Security controls
 
-`controls.json` defines 15 controls across five categories, three per category:
+`controls/m6t1.json` is the default catalog. It defines 15 controls across five categories, three per category:
 
 - Authentication
 - Authorization
@@ -82,9 +84,18 @@ Web runs also keep the uploaded diagram and a `4_threat_model.html` copy of the 
 - Logging
 - Secrets management
 
-The identifiers are internal and do not correspond to a formal security standard.
+Its identifiers are internal and do not correspond to a formal security standard.
 
-Normative security standards can also be used, provided they are converted to the same JSON schema and saved as `controls.json`.
+Normative security standards can also be used with `--controls`, provided they are converted to the same JSON schema.
+
+Each control must provide:
+
+- `id`
+- `category`
+- `name`
+- `description`
+
+`implementation`, `references`, and `stride` are optional.
 
 ## Design
 
@@ -93,22 +104,24 @@ Normative security standards can also be used, provided they are converted to th
 - STRIDE is applied according to element type
 - Missing protections are treated as unknown rather than assumed absent
 - The final Markdown report is built deterministically from the validated results
-- Threat-to-control mapping is restricted to `controls.json`.
+- Threat-to-control mapping is restricted to the selected control catalog
 
 ## Project structure
 
 ```text
 findmythreats/
-├── threat_modeler.py
-├── controls.json
+├── findmythreats.py
+├── controls/
+│   └── m6t1.json
 ├── web.py
 ├── web.html
 ├── input/
 ├── output/
 └── tests/
+    └── test_findmythreats.py
 ```
 
-`threat_modeler.py` contains all the threat-modeling logic. `web.py` is only a presentation layer that reuses `run_pipeline()`.
+`findmythreats.py` contains all the threat-modeling logic. `web.py` is only a presentation layer that reuses `run_pipeline()`.
 
 ## Tests
 
