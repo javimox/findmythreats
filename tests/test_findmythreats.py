@@ -98,6 +98,28 @@ class FindMyThreatsTests(unittest.TestCase):
             self.assertIn("| T1 | TRANS-001 | Usar TLS. |", report)
             self.assertIn("| SEC-003 | Manejo de secretos |", report)
 
+    def test_pipeline_reports_progress(self):
+        answers = {
+            "architecture": json.dumps(ARCHITECTURE),
+            "threats": json.dumps(THREATS),
+            "mappings": json.dumps(MAPPINGS),
+        }
+        events = []
+        with tempfile.TemporaryDirectory() as folder, mock.patch.object(tm.LLM, "chat", fake_chat(answers)):
+            root = Path(folder)
+            image = root / "diagram.png"
+            image.write_bytes(b"\x89PNG")
+            tm.run_pipeline(
+                tm.LLM("http://example.test/v1", "test", "test"),
+                image,
+                root / "out",
+                progress=lambda step, message: events.append((step, message)),
+            )
+
+        self.assertEqual([1, 2, 3, 4], [step for step, _ in events])
+        self.assertEqual("Extracción de componentes", events[0][1])
+        self.assertEqual("Generación del informe", events[-1][1])
+
     def test_custom_control_catalog_with_required_fields_only(self):
         custom_controls = [
             {
