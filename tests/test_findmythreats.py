@@ -79,10 +79,15 @@ class FindMyThreatsTests(unittest.TestCase):
             root = Path(folder)
             image = root / "diagram.png"
             image.write_bytes(b"\x89PNG")
-            out = root / "out"
+            output_root = root / "out"
 
-            code = tm.main([str(image), "--model", "test", "--out-dir", str(out)])
+            code = tm.main([str(image), "--model", "test", "--out-dir", str(output_root)])
             self.assertEqual(0, code)
+            runs = list(output_root.iterdir())
+            self.assertEqual(1, len(runs))
+            out = runs[0]
+            self.assertRegex(out.name, r"^diagram-\d{8}-\d{6}-[a-z0-9]{4}$")
+            self.assertEqual(b"\x89PNG", (out / "diagram.png").read_bytes())
             self.assertEqual(ARCHITECTURE, json.loads((out / "1_components.json").read_text("utf-8")))
             self.assertEqual(THREATS["threats"], json.loads((out / "2_threats.json").read_text("utf-8")))
             self.assertEqual(MAPPINGS["mappings"], json.loads((out / "3_mappings.json").read_text("utf-8")))
@@ -120,12 +125,15 @@ class FindMyThreatsTests(unittest.TestCase):
             controls_file.write_text(json.dumps(custom_controls), encoding="utf-8")
             image = root / "diagram.png"
             image.write_bytes(b"\x89PNG")
-            out = root / "out"
+            output_root = root / "out"
 
             code = tm.main([
-                str(image), "--model", "test", "--controls", str(controls_file), "--out-dir", str(out)
+                str(image), "--model", "test", "--controls", str(controls_file), "--out-dir", str(output_root)
             ])
             self.assertEqual(0, code)
+            runs = list(output_root.iterdir())
+            self.assertEqual(1, len(runs))
+            out = runs[0]
 
             loaded = tm.load_controls(controls_file)
             self.assertEqual("", loaded[0]["implementation"])

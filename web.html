@@ -139,8 +139,10 @@
     button.disabled=true; result.hidden=true; document.body.classList.add("running");
     say("Analizando el diagrama. Un modelo local puede tardar varios minutos…");
     try{
-      const response=await fetch("/analyze",{method:"POST",body:data.get("image"),headers:{
-        "X-LLM-URL":data.get("url"),"X-LLM-Model":data.get("model"),"X-LLM-Key":data.get("key")}});
+      const image=data.get("image");
+      const response=await fetch("/analyze",{method:"POST",body:image,headers:{
+        "X-LLM-URL":data.get("url"),"X-LLM-Model":data.get("model"),"X-LLM-Key":data.get("key"),
+        "X-File-Name":encodeURIComponent(image.name)}});
       const answer=await response.json(); if(!response.ok) throw new Error(answer.error);
       const cards=answer.files.map(file=>{
         const [title,desc]=labels[file.name]||[file.name,""]; const card=document.createElement("div"); card.className="file-card";

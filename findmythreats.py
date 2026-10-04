@@ -10,9 +10,14 @@ import base64
 import json
 import mimetypes
 import os
+import re
+import secrets
+import shutil
+import string
 import sys
 import urllib.error
 import urllib.request
+from datetime import datetime
 from pathlib import Path
 
 BASE_URL = "http://localhost:11434/v1"
@@ -366,6 +371,21 @@ def save_json(path: Path, value) -> None:
     path.write_text(dump(value) + "\n", encoding="utf-8")
 
 
+def create_run_directory(image_name: str, output_root: Path) -> Path:
+    """Create one timestamped output directory for an analysis run."""
+    stem = re.sub(r"[^A-Za-z0-9._-]+", "-", Path(image_name).stem).strip(".-_") or "diagram"
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    alphabet = string.ascii_lowercase + string.digits
+    while True:
+        suffix = "".join(secrets.choice(alphabet) for _ in range(4))
+        run_dir = output_root / f"{stem}-{timestamp}-{suffix}"
+        try:
+            run_dir.mkdir(parents=True, exist_ok=False)
+        except FileExistsError:
+            continue
+        return run_dir
+
+
 def run_pipeline(
     llm: LLM,
     image: Path,
@@ -408,7 +428,11 @@ def main(argv: list[str] | None = None) -> int:
         default=DEFAULT_CONTROLS_FILE,
         help="catálogo JSON; por defecto controls/m6t1.json",
     )
-    parser.add_argument("--out-dir", type=Path, help="por defecto output/<nombre-diagrama>")
+    parser.add_argument(
+        "--out-dir",
+        type=Path,
+        help="directorio raíz de salida; por defecto output/",
+    )
     args = parser.parse_args(argv)
 
     if not args.image.is_file():
@@ -418,11 +442,14 @@ def main(argv: list[str] | None = None) -> int:
     if not args.controls.is_file():
         parser.error(f"no existe el catálogo de controles {args.controls}")
 
-    out_dir = args.out_dir or Path("output") / args.image.stem
+    output_root = args.out_dir or ROOT / "output"
     try:
+        out_dir = create_run_directory(args.image.name, output_root)
+        image = out_dir / f"diagram{args.image.suffix.lower()}"
+        shutil.copy2(args.image, image)
         report = run_pipeline(
             LLM(args.base_url, args.api_key, args.model),
-            args.image,
+            image,
             out_dir,
             args.controls,
         )
