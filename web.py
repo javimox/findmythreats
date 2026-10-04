@@ -14,7 +14,7 @@ import time
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import unquote
+from urllib.parse import quote, unquote
 
 from findmythreats import LLM, LLMError, create_run_directory, run_pipeline
 
@@ -34,17 +34,35 @@ def control_catalogs() -> dict[str, Path]:
     return {path.name: path for path in sorted(CONTROLS.glob("*.json")) if path.is_file()}
 
 
+def available_reports() -> dict[str, Path]:
+    """Return run directories that contain a Markdown threat report."""
+    if not OUTPUT.is_dir():
+        return {}
+    runs = sorted(OUTPUT.iterdir(), key=lambda path: path.name, reverse=True)
+    return {path.name: path for path in runs if path.is_dir() and (path / "4_threat_model.md").is_file()}
+
+
+def artifact_files(run_dir: Path) -> list[dict]:
+    """Return downloadable artifacts for a run directory."""
+    return [
+        {"name": name, "size": (run_dir / name).stat().st_size}
+        for name in ARTIFACTS
+        if (run_dir / name).is_file()
+    ]
+
+
 REPORT_HEAD = """<!doctype html>
 <html lang="en"><meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'unsafe-inline'">
-<title>Threat Model</title>
+__BASE__
+<title>__TITLE__</title>
 <style>
 body{max-width:72rem;margin:0 auto;padding:2rem 1.5rem 3rem;color:#17212f;background:#fff;
 font:1rem/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}h1{font-size:2rem}h2{margin:2.3rem 0 .7rem;
 border-bottom:2px solid #17212f;padding-bottom:.35rem;font-size:1.25rem}table{width:100%;border-collapse:collapse;
 margin:1rem 0;font-size:.9rem}th,td{padding:.5rem .65rem;border-bottom:1px solid #d5dbe3;text-align:left;
 vertical-align:top}th{border-bottom:1.5px solid #17212f}td:first-child{font-weight:600}img{max-width:100%;
-border:1px solid #d5dbe3;border-radius:.35rem}code{padding:.1rem .3rem;background:#f1f4f7;border-radius:.2rem}
+border:1px solid #d5dbe3;border-radius:.35rem}code{padding:.1rem .3rem;background:#f1f4f7;border-radius:.2rem}pre{overflow:auto;padding:1rem;background:#f1f4f7;border-radius:.35rem}pre code{padding:0;background:none}
 </style>
 """
 
@@ -68,6 +86,9 @@ def markdown_to_html(markdown: str) -> str:
         if block.startswith("#"):
             level = len(block) - len(block.lstrip("#"))
             blocks.append(f"<h{level}>{inline(block.lstrip('# '))}</h{level}>")
+        elif lines[0].startswith("```") and lines[-1].strip() == "```":
+            code = html.escape("\n".join(lines[1:-1]))
+            blocks.append(f"<pre><code>{code}</code></pre>")
         elif block.startswith("|") and len(lines) > 1:
             body = "".join(row(line, "td") for line in lines[2:])
             blocks.append(f"<table>{row(lines[0], 'th')}{body}</table>")
@@ -79,6 +100,13 @@ def markdown_to_html(markdown: str) -> str:
     return "\n".join(blocks)
 
 
+def render_page(markdown: str, title: str, base_href: str = "") -> str:
+    """Render Markdown as a standalone HTML page."""
+    base = f'<base href="{html.escape(base_href, quote=True)}">' if base_href else ""
+    head = REPORT_HEAD.replace("__BASE__", base).replace("__TITLE__", html.escape(title))
+    return head + markdown_to_html(markdown) + "\n</html>"
+
+
 class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
@@ -88,6 +116,26 @@ class Handler(SimpleHTTPRequestHandler):
             names = list(catalogs)
             default = DEFAULT_CONTROLS if DEFAULT_CONTROLS in catalogs else (names[0] if names else None)
             self.reply_json(200, {"controls": names, "default": default})
+        elif self.path == "/reports":
+            reports = [
+                {"run": name, "files": artifact_files(path)}
+                for name, path in available_reports().items()
+            ]
+            self.reply_json(200, {"reports": reports})
+        elif self.path == "/readme":
+            markdown = (ROOT / "README.md").read_text(encoding="utf-8")
+            self.reply(200, "text/html; charset=utf-8", render_page(markdown, "FindMyThreats README").encode())
+        elif self.path.startswith("/report/"):
+            run_name = unquote(self.path.removeprefix("/report/"))
+            run_dir = available_reports().get(run_name)
+            if run_dir is None:
+                return self.reply(404, "text/plain; charset=utf-8", b"Report not found.")
+            markdown = (run_dir / "4_threat_model.md").read_text(encoding="utf-8")
+            self.reply(
+                200,
+                "text/html; charset=utf-8",
+                render_page(markdown, "Threat Model", f"/{quote(run_name)}/").encode(),
+            )
         else:
             super().do_GET()
 
@@ -127,13 +175,9 @@ class Handler(SimpleHTTPRequestHandler):
             llm = LLM(base_url, self.headers.get("X-LLM-Key") or "ollama", model)
             report = run_pipeline(llm, image, out_dir, controls_file, progress=progress)
             report.with_suffix(".html").write_text(
-                REPORT_HEAD + markdown_to_html(report.read_text(encoding="utf-8")), encoding="utf-8"
+                render_page(report.read_text(encoding="utf-8"), "Threat Model"), encoding="utf-8"
             )
-            files = [
-                {"name": name, "size": (out_dir / name).stat().st_size}
-                for name in ARTIFACTS
-                if (out_dir / name).is_file()
-            ]
+            files = artifact_files(out_dir)
         except (LLMError, ValueError, OSError) as exc:
             self.stream_json({"type": "error", "error": str(exc)})
             return

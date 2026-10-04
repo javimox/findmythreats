@@ -12,6 +12,7 @@
   *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font:1rem/1.5 var(--sans)}
   main{max-width:76rem;margin:0 auto;padding:2.5rem 1.25rem 4rem} h1{margin:0;font-size:2.4rem;letter-spacing:-.035em}
   h2{margin:0 0 .3rem;font-size:1.15rem}.lead{margin:.4rem 0 0;color:var(--muted);max-width:65ch}
+  .page-head{display:flex;justify-content:space-between;gap:1rem;align-items:start}.text-link{color:var(--blue);text-decoration:none;font-weight:650;font-size:.9rem}
   .pipeline{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin:1.7rem 0 2rem;color:var(--muted);font-size:.86rem}
   .step{padding:.4rem .65rem;background:var(--surface);border:1px solid var(--line);border-radius:.35rem}.arrow{color:#8a94a2}
   form{display:grid;grid-template-columns:22rem 1fr;gap:1rem}.panel{background:var(--surface);border:1px solid var(--line);border-radius:.65rem;padding:1.2rem}
@@ -27,6 +28,7 @@
     background:#fff;border:1px solid var(--line);border-radius:.4rem}.upload-mark{font-size:2.2rem;color:var(--accent);line-height:1}
   button{width:100%;margin-top:1rem;padding:.7rem 1rem;border:0;border-radius:.4rem;background:var(--ink);color:#fff;font:650 1rem var(--sans);cursor:pointer}
   button:hover{background:#263548}button:disabled{background:#7d8794;cursor:progress}.message{min-height:1.5rem;margin:1rem 0 0;color:var(--muted)}
+  .report-browser{margin-top:1rem}.report-loader{display:grid;grid-template-columns:1fr auto;gap:.75rem;align-items:center;margin-top:.8rem}.report-loader button{width:auto;margin:0;white-space:nowrap}
   .message.error{color:var(--accent);font-weight:650}.running .arrow{color:var(--accent)}
   .progress-panel{margin-top:1rem}.progress-head{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:.65rem}
   .progress-head span{color:var(--muted);font-size:.85rem}progress{display:block;width:100%;height:.65rem;accent-color:var(--blue)}
@@ -43,12 +45,17 @@
   .report-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:.8rem}.report-head a{color:var(--blue);font-size:.85rem;text-decoration:none}
   iframe{display:block;width:100%;height:78vh;background:#fff;border:1px solid var(--line);border-radius:.65rem}
   @media(max-width:54rem){form{grid-template-columns:1fr}#files{grid-template-columns:repeat(2,1fr)}.progress-steps{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:36rem){main{padding:1.5rem .8rem 3rem}h1{font-size:2rem}.pipeline{display:none}#files,.progress-steps{grid-template-columns:1fr}.success{align-items:flex-start;flex-direction:column}}
+  @media(max-width:36rem){main{padding:1.5rem .8rem 3rem}h1{font-size:2rem}.pipeline{display:none}.page-head{align-items:center}.report-loader,#files,.progress-steps{grid-template-columns:1fr}.report-loader button{width:100%}.success{align-items:flex-start;flex-direction:column}}
 </style>
 
 <main>
-  <h1>FindMyThreats</h1>
-  <p class="lead">Automated threat modeling from an architecture diagram.</p>
+  <div class="page-head">
+    <div>
+      <h1>FindMyThreats</h1>
+      <p class="lead">Automated threat modeling from an architecture diagram.</p>
+    </div>
+    <a class="text-link" href="/readme" target="_blank" rel="noopener">README ↗</a>
+  </div>
 
   <div class="pipeline" aria-label="Analysis workflow">
     <span class="step">Diagram</span><span class="arrow">→</span><span class="step">Components</span>
@@ -89,6 +96,14 @@
     </section>
   </form>
 
+  <section class="panel report-browser">
+    <div><h2>Previous reports</h2><span class="hint">Load a report already stored under <code>output/</code>.</span></div>
+    <div class="report-loader">
+      <select id="previous-reports" aria-label="Previous reports"></select>
+      <button id="load-report" type="button">Load report</button>
+    </div>
+  </section>
+
   <section id="progress-panel" class="panel progress-panel" hidden aria-live="polite">
     <div class="progress-head"><strong>Analysis in progress</strong><span><span id="progress-status">Preparing…</span> · <time id="progress-elapsed">00:00</time></span></div>
     <progress id="progress-bar" max="4" value="0"></progress>
@@ -104,12 +119,12 @@
 
   <section id="result" hidden>
     <div class="success">
-      <div><strong>✓ Analysis complete</strong><small>All four stages completed successfully.</small></div>
+      <div><strong id="result-title">✓ Analysis complete</strong><small id="result-note">All four stages completed successfully.</small></div>
       <div id="elapsed"></div>
     </div>
 
     <section class="panel files-panel">
-      <div class="files-head"><div><h2>Generated files</h2><p>Download each analysis artifact.</p></div><small id="file-count"></small></div>
+      <div class="files-head"><div><h2>Analysis files</h2><p>Download each analysis artifact.</p></div><small id="file-count"></small></div>
       <div id="files"></div>
     </section>
 
@@ -125,6 +140,8 @@
   const drop = document.getElementById("drop");
   const picker = form.elements.image;
   const controls = form.elements.controls;
+  const previousReports = document.getElementById("previous-reports");
+  const loadReportButton = document.getElementById("load-report");
   const message = document.getElementById("message");
   const result = document.getElementById("result");
   const progressPanel = document.getElementById("progress-panel");
@@ -135,6 +152,7 @@
   const progressSteps = [...document.querySelectorAll("#progress-steps li")];
   let timerId = null;
   let timerStartedAt = 0;
+  let reports = [];
 
   const labels = {
     "1_components.json": ["Architecture", "Components and flows"],
@@ -267,6 +285,70 @@
     }
   }
 
+  async function loadReports(selectedRun = "") {
+    try {
+      const response = await fetch("/reports");
+      const answer = await response.json();
+      if (!response.ok) throw new Error(answer.error || `HTTP ${response.status}`);
+
+      reports = answer.reports;
+      const options = reports.map(report => {
+        const option = document.createElement("option");
+        option.value = report.run;
+        option.textContent = report.run;
+        return option;
+      });
+
+      if (!options.length) {
+        const option = document.createElement("option");
+        option.textContent = "No reports available";
+        options.push(option);
+      }
+      previousReports.replaceChildren(...options);
+      previousReports.disabled = !reports.length;
+      loadReportButton.disabled = !reports.length;
+      if (selectedRun && reports.some(report => report.run === selectedRun)) {
+        previousReports.value = selectedRun;
+      }
+    } catch (error) {
+      reports = [];
+      previousReports.replaceChildren();
+      previousReports.disabled = true;
+      loadReportButton.disabled = true;
+      say(`Could not load previous reports: ${error.message}`, true);
+    }
+  }
+
+  function showResult(answer, loaded = false) {
+    const cards = answer.files.map(file => {
+      const [title, description] = labels[file.name] || [file.name, ""];
+      const card = document.createElement("div");
+      const url = `/${encodeURIComponent(answer.run)}/${encodeURIComponent(file.name)}`;
+      card.className = "file-card";
+      card.innerHTML =
+        `<b>${title}</b>` +
+        `<code>${file.name}</code>` +
+        `<small>${description} · ${size(file.size)}</small>` +
+        `<a href="${url}" download>Download ↓</a>`;
+      return card;
+    });
+
+    document.getElementById("files").replaceChildren(...cards);
+    document.getElementById("file-count").textContent = `${answer.files.length} files`;
+    document.getElementById("result-title").textContent = loaded ? "✓ Report loaded" : "✓ Analysis complete";
+    document.getElementById("result-note").textContent = loaded
+      ? "Existing analysis output loaded successfully."
+      : "All four stages completed successfully.";
+    document.getElementById("elapsed").textContent = loaded ? "" : `Processed in ${duration(answer.elapsed)}`;
+
+    const report = `/report/${encodeURIComponent(answer.run)}`;
+    reportPath.textContent = `output/${answer.run}/4_threat_model.md`;
+    document.getElementById("report").src = report;
+    document.getElementById("open-report").href = report;
+    result.hidden = false;
+    result.scrollIntoView({behavior: "smooth"});
+  }
+
   function showPreview() {
     const file = picker.files[0];
     const preview = document.getElementById("preview");
@@ -298,6 +380,17 @@
   });
 
   loadControls();
+  loadReports();
+
+  loadReportButton.addEventListener("click", () => {
+    const report = reports.find(item => item.run === previousReports.value);
+    if (!report) return;
+    if (!document.body.classList.contains("running")) {
+      progressPanel.hidden = true;
+    }
+    say("");
+    showResult(report, true);
+  });
 
   form.addEventListener("submit", async event => {
     event.preventDefault();
@@ -326,30 +419,9 @@
       const answer = await readAnalysis(response);
       finishProgress();
 
-      const cards = answer.files.map(file => {
-        const [title, description] = labels[file.name] || [file.name, ""];
-        const card = document.createElement("div");
-        const url = `/${answer.run}/${file.name}`;
-        card.className = "file-card";
-        card.innerHTML =
-          `<b>${title}</b>` +
-          `<code>${file.name}</code>` +
-          `<small>${description} · ${size(file.size)}</small>` +
-          `<a href="${url}" download>Download ↓</a>`;
-        return card;
-      });
-
-      document.getElementById("files").replaceChildren(...cards);
-      document.getElementById("file-count").textContent = `${answer.files.length} files`;
-      document.getElementById("elapsed").textContent = `Processed in ${duration(answer.elapsed)}`;
-
-      const report = `/${answer.run}/4_threat_model.html`;
-      reportPath.textContent = `output/${answer.run}/4_threat_model.md`;
-      document.getElementById("report").src = report;
-      document.getElementById("open-report").href = report;
-      result.hidden = false;
+      showResult(answer);
+      loadReports(answer.run);
       say("");
-      result.scrollIntoView({behavior: "smooth"});
     } catch (error) {
       progressStatus.textContent = "Interrupted";
       say(`Could not analyze the diagram: ${error.message}`, true);
