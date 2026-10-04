@@ -112,6 +112,22 @@ Each control must provide:
 
 `implementation`, `references`, and `stride` are optional.
 
+### NIST SP 800-53
+https://github.com/usnistgov/oscal-content/tree/main/nist.gov/SP800-53
+
+`parse_controls.py` can convert selected families from the official NIST SP 800-53 Rev.
+5 OSCAL JSON catalog into the FindMyThreats format:
+
+```bash
+python parse_controls.py nist NIST_SP-800-53_rev5_catalog.json \
+  --families AC,IA,SC \
+  --output controls/nist_sp_800_53.json
+```
+
+Only base controls are converted; control enhancements are intentionally ignored.
+Select only the families relevant to the analysis to keep the control catalog and LLM prompt
+reasonably small. The converter does not download the NIST catalog.
+
 ## Design
 
 - Four simple processing stages
@@ -126,6 +142,7 @@ Each control must provide:
 ```text
 findmythreats/
 ├── findmythreats.py
+├── parse_controls.py
 ├── controls/
 │   └── m6t1.json
 ├── web.py
@@ -134,6 +151,7 @@ findmythreats/
 ├── output/
 └── tests/
     └── test_findmythreats.py
+    └── test_parse_controls.py
 ```
 
 `findmythreats.py` contains all the threat-modeling logic. `web.py` is only a presentation layer that reuses `run_pipeline()`.
