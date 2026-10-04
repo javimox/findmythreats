@@ -1,0 +1,137 @@
+[
+  {
+    "id": "AUTH-001",
+    "category": "Autenticación",
+    "name": "Autenticación multifactor",
+    "description": "Exigir MFA en cuentas privilegiadas y operaciones sensibles para reducir la suplantación de identidad.",
+    "implementation": "Aplicar MFA desde el proveedor de identidad y preferir factores resistentes al phishing cuando estén disponibles.",
+    "references": ["Libro del Módulo 6, pp. 79-81", "OWASP Authentication Cheat Sheet"],
+    "stride": ["Spoofing"]
+  },
+  {
+    "id": "AUTH-002",
+    "category": "Autenticación",
+    "name": "Gestión de sesión segura",
+    "description": "Proteger el ciclo de vida de las sesiones para impedir robo, fijación o reutilización indebida.",
+    "implementation": "Usar cookies HttpOnly, Secure y SameSite, rotar la sesión tras el login y aplicar expiración e invalidación.",
+    "references": ["Libro del Módulo 6, pp. 79-81", "OWASP Session Management Cheat Sheet"],
+    "stride": ["Spoofing", "Elevation of Privilege"]
+  },
+  {
+    "id": "AUTH-003",
+    "category": "Autenticación",
+    "name": "Protecciones anti-abuso y rate limiting",
+    "description": "Limitar intentos y peticiones automatizadas en puntos de entrada, especialmente login y recuperación de cuenta.",
+    "implementation": "Aplicar límites por usuario u origen, bloqueos progresivos, timeouts y límites de tamaño.",
+    "references": ["Libro del Módulo 6, pp. 79-81", "OWASP Credential Stuffing Prevention Cheat Sheet"],
+    "stride": ["Spoofing", "Denial of Service"]
+  },
+  {
+    "id": "AUTHZ-001",
+    "category": "Autorización",
+    "name": "Denegación por defecto",
+    "description": "Cada operación debe comprobar que el sujeto está autorizado sobre el recurso concreto; lo no permitido se deniega.",
+    "implementation": "Comprobar autorización en servidor para cada operación sensible y verificar el acceso al recurso concreto.",
+    "references": ["Libro del Módulo 6, pp. 79-81", "OWASP Authorization Cheat Sheet"],
+    "stride": ["Elevation of Privilege", "Information Disclosure"]
+  },
+  {
+    "id": "AUTHZ-002",
+    "category": "Autorización",
+    "name": "Mínimo privilegio",
+    "description": "Usuarios, servicios y cuentas técnicas reciben solo los permisos necesarios para su función.",
+    "implementation": "Asignar permisos mínimos por defecto, separar cuentas técnicas y revisar periódicamente los permisos.",
+    "references": ["Libro del Módulo 6, pp. 79-81", "OWASP Authorization Cheat Sheet"],
+    "stride": ["Elevation of Privilege", "Tampering"]
+  },
+  {
+    "id": "AUTHZ-003",
+    "category": "Autorización",
+    "name": "Separación de funciones",
+    "description": "Evitar que una única identidad pueda completar sin control acciones críticas de principio a fin.",
+    "implementation": "Separar funciones administrativas y exigir aprobación adicional cuando la acción tenga alto impacto.",
+    "references": ["Libro del Módulo 6, pp. 79-81", "OWASP Authorization Cheat Sheet"],
+    "stride": ["Elevation of Privilege", "Repudiation"]
+  },
+  {
+    "id": "TRANS-001",
+    "category": "Datos en tránsito",
+    "name": "TLS extremo a extremo",
+    "description": "Cifrar las comunicaciones externas e internas con TLS correctamente configurado y validar los certificados.",
+    "implementation": "Usar HTTPS/TLS, validar certificados y deshabilitar protocolos o configuraciones obsoletas.",
+    "references": ["Libro del Módulo 6, pp. 80-81", "OWASP Transport Layer Security Cheat Sheet"],
+    "stride": ["Information Disclosure", "Tampering"]
+  },
+  {
+    "id": "TRANS-002",
+    "category": "Datos en tránsito",
+    "name": "mTLS entre servicios",
+    "description": "Autenticar mutuamente servicios mediante certificados cuando el riesgo y la arquitectura lo justifiquen.",
+    "implementation": "Usar certificados de cliente y servidor, automatizar su rotación y rechazar identidades no verificables.",
+    "references": ["Libro del Módulo 6, pp. 80-81", "OWASP Transport Layer Security Cheat Sheet"],
+    "stride": ["Spoofing", "Tampering", "Information Disclosure"]
+  },
+  {
+    "id": "TRANS-003",
+    "category": "Datos en tránsito",
+    "name": "Integridad de mensajes y validación de esquema",
+    "description": "Validar estructura e integridad de mensajes intercambiados entre componentes.",
+    "implementation": "Validar mensajes contra un esquema conocido y usar firmas o HMAC cuando sea necesario garantizar integridad.",
+    "references": ["Libro del Módulo 6, pp. 80-81", "OWASP Input Validation Cheat Sheet"],
+    "stride": ["Tampering"]
+  },
+  {
+    "id": "LOG-001",
+    "category": "Logs",
+    "name": "Registro estructurado y correlacionado",
+    "description": "Registrar eventos relevantes con contexto suficiente para reconstruir quién hizo qué y cuándo.",
+    "implementation": "Registrar identidad, acción, recurso, resultado y timestamp, propagando identificadores de correlación.",
+    "references": ["Libro del Módulo 6, pp. 80-81", "OWASP Logging Cheat Sheet"],
+    "stride": ["Repudiation"]
+  },
+  {
+    "id": "LOG-002",
+    "category": "Logs",
+    "name": "Higiene de datos en logs",
+    "description": "Evitar secretos y datos personales innecesarios en registros, aplicando enmascarado cuando corresponda.",
+    "implementation": "No registrar contraseñas, tokens o cabeceras de autorización y enmascarar datos sensibles necesarios.",
+    "references": ["Libro del Módulo 6, pp. 80-81", "OWASP Logging Cheat Sheet"],
+    "stride": ["Information Disclosure"]
+  },
+  {
+    "id": "LOG-003",
+    "category": "Logs",
+    "name": "Centralización, integridad y alertas",
+    "description": "Centralizar los registros, protegerlos frente a alteración y generar alertas sobre eventos de seguridad relevantes.",
+    "implementation": "Enviar logs a un sistema central con acceso restringido, proteger su integridad y definir alertas y retención.",
+    "references": ["Libro del Módulo 6, pp. 80-81", "OWASP Logging Cheat Sheet"],
+    "stride": ["Repudiation", "Tampering", "Denial of Service"]
+  },
+  {
+    "id": "SEC-001",
+    "category": "Manejo de secretos",
+    "name": "Gestor central de secretos",
+    "description": "Almacenar claves, tokens y contraseñas en un gestor de secretos en lugar de código, imágenes o ficheros distribuidos.",
+    "implementation": "Usar un gestor central como única fuente de secretos y restringir el acceso según la identidad del servicio.",
+    "references": ["Libro del Módulo 6, pp. 80-81", "OWASP Secrets Management Cheat Sheet"],
+    "stride": ["Information Disclosure", "Spoofing"]
+  },
+  {
+    "id": "SEC-002",
+    "category": "Manejo de secretos",
+    "name": "Credenciales de vida corta y rotación",
+    "description": "Reducir la vigencia de las credenciales y automatizar su rotación siempre que sea posible.",
+    "implementation": "Preferir credenciales temporales, automatizar la rotación y disponer de un procedimiento de revocación.",
+    "references": ["Libro del Módulo 6, pp. 80-81", "OWASP Secrets Management Cheat Sheet"],
+    "stride": ["Spoofing", "Elevation of Privilege"]
+  },
+  {
+    "id": "SEC-003",
+    "category": "Manejo de secretos",
+    "name": "Inyección segura de secretos en ejecución",
+    "description": "Entregar secretos al proceso en tiempo de ejecución evitando que queden persistidos o expuestos innecesariamente.",
+    "implementation": "Inyectar secretos en ejecución y evitar incluirlos en repositorios, imágenes, argumentos o logs.",
+    "references": ["Libro del Módulo 6, pp. 80-81", "OWASP Secrets Management Cheat Sheet"],
+    "stride": ["Information Disclosure"]
+  }
+]

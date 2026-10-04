@@ -1,1 +1,1 @@
-Coloca aquí el diagrama de arquitectura que quieras analizar.
+Place the architecture diagram you want to analyze here.

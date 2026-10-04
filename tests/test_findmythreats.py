@@ -1,4 +1,4 @@
-"""Pruebas sin red: el LLM se sustituye por respuestas preparadas."""
+"""Offline tests: the LLM is replaced with prepared responses."""
 
 import json
 import sys
@@ -12,34 +12,34 @@ import findmythreats as tm
 
 ARCHITECTURE = {
     "components": [
-        {"id": "C1", "name": "Usuario", "type": "entidad externa", "description": "Actor"},
-        {"id": "C2", "name": "Frontend", "type": "proceso", "description": "Interfaz | web"},
-        {"id": "C3", "name": "Backend", "type": "proceso", "description": "API"},
-        {"id": "C4", "name": "DB", "type": "almacén de datos", "description": "Datos"},
+        {"id": "C1", "name": "User", "type": "external entity", "description": "Actor"},
+        {"id": "C2", "name": "Frontend", "type": "process", "description": "Web | interface"},
+        {"id": "C3", "name": "Backend", "type": "process", "description": "API"},
+        {"id": "C4", "name": "DB", "type": "data store", "description": "Data"},
     ],
     "data_flows": [
-        {"id": "F1", "source": "C1", "target": "C2", "protocol": "HTTPS", "description": "Peticiones"},
+        {"id": "F1", "source": "C1", "target": "C2", "protocol": "HTTPS", "description": "Requests"},
         {"id": "F2", "source": "C2", "target": "C3", "protocol": "HTTP", "description": "API"},
-        {"id": "F3", "source": "C3", "target": "C4", "protocol": "", "description": "Consultas"},
+        {"id": "F3", "source": "C3", "target": "C4", "protocol": "", "description": "Queries"},
     ],
 }
 THREATS = {
     "threats": [
-        {"id": "T1", "element_id": "F2", "stride": "Information Disclosure", "title": "Tráfico en claro", "description": "HTTP podría exponer datos."},
-        {"id": "T2", "element_id": "C2", "stride": "Spoofing", "title": "Suplantación", "description": "Si la autenticación es insuficiente."},
+        {"id": "T1", "element_id": "F2", "stride": "Information Disclosure", "title": "Cleartext traffic", "description": "HTTP could expose data."},
+        {"id": "T2", "element_id": "C2", "stride": "Spoofing", "title": "Spoofing", "description": "If authentication is insufficient."},
     ]
 }
 MAPPINGS = {
     "mappings": [
-        {"threat_id": "T1", "control_ids": ["TRANS-001"], "recommendation": "Usar TLS."},
-        {"threat_id": "T2", "control_ids": ["AUTH-001"], "recommendation": "Aplicar MFA cuando corresponda."},
+        {"threat_id": "T1", "control_ids": ["TRANS-001"], "recommendation": "Use TLS."},
+        {"threat_id": "T2", "control_ids": ["AUTH-001"], "recommendation": "Apply MFA where appropriate."},
     ]
 }
 
 
 def fake_chat(answers):
     def chat(self, prompt, image=None):
-        step = "architecture" if image else "threats" if "Identifica amenazas" in prompt else "mappings"
+        step = "architecture" if image else "threats" if "Identify security threats" in prompt else "mappings"
         answer = answers[step]
         return answer.pop(0) if isinstance(answer, list) else answer
 
@@ -65,8 +65,8 @@ class FindMyThreatsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             tm.validate_threats(bad_threats, ARCHITECTURE)
 
-        bad_mappings = {"mappings": [{**MAPPINGS["mappings"][0], "control_ids": ["INVENTADO"]}, MAPPINGS["mappings"][1]]}
-        with self.assertRaisesRegex(ValueError, "INVENTADO"):
+        bad_mappings = {"mappings": [{**MAPPINGS["mappings"][0], "control_ids": ["UNKNOWN"]}, MAPPINGS["mappings"][1]]}
+        with self.assertRaisesRegex(ValueError, "UNKNOWN"):
             tm.validate_mappings(bad_mappings, THREATS["threats"], tm.load_controls())
 
     def test_pipeline_and_retry(self):
@@ -93,10 +93,10 @@ class FindMyThreatsTests(unittest.TestCase):
             self.assertEqual(MAPPINGS["mappings"], json.loads((out / "3_mappings.json").read_text("utf-8")))
 
             report = (out / "4_threat_model.md").read_text("utf-8")
-            self.assertIn("Interfaz \\| web", report)
+            self.assertIn("Web \\| interface", report)
             self.assertIn("| T1 | Frontend → Backend | Information Disclosure |", report)
-            self.assertIn("| T1 | TRANS-001 | Usar TLS. |", report)
-            self.assertIn("| SEC-003 | Manejo de secretos |", report)
+            self.assertIn("| T1 | TRANS-001 | Use TLS. |", report)
+            self.assertIn("| SEC-003 | Secrets management |", report)
 
     def test_pipeline_reports_progress(self):
         answers = {
@@ -117,8 +117,8 @@ class FindMyThreatsTests(unittest.TestCase):
             )
 
         self.assertEqual([1, 2, 3, 4], [step for step, _ in events])
-        self.assertEqual("Extracción de componentes", events[0][1])
-        self.assertEqual("Generación del informe", events[-1][1])
+        self.assertEqual("Extracting components", events[0][1])
+        self.assertEqual("Generating report", events[-1][1])
 
     def test_custom_control_catalog_with_required_fields_only(self):
         custom_controls = [
@@ -176,22 +176,22 @@ class FindMyThreatsTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as folder, mock.patch.object(web, "CONTROLS", Path(folder)):
             controls_dir = Path(folder)
-            (controls_dir / "m6t1.json").write_text("[]", encoding="utf-8")
+            (controls_dir / "m6t1_en.json").write_text("[]", encoding="utf-8")
             (controls_dir / "notes.txt").write_text("ignore", encoding="utf-8")
             (controls_dir / "nested.json").mkdir()
 
             catalogs = web.control_catalogs()
-            self.assertEqual(["m6t1.json"], list(catalogs))
-            self.assertEqual(controls_dir / "m6t1.json", catalogs["m6t1.json"])
-            self.assertIsNone(catalogs.get("../m6t1.json"))
+            self.assertEqual(["m6t1_en.json"], list(catalogs))
+            self.assertEqual(controls_dir / "m6t1_en.json", catalogs["m6t1_en.json"])
+            self.assertIsNone(catalogs.get("../m6t1_en.json"))
 
     def test_web_markdown_renderer_escapes_html(self):
         import web
 
         rendered = web.markdown_to_html(
-            "# Informe\n\n| A | B |\n| --- | --- |\n| x | <script>alert(1)</script> |"
+            "# Report\n\n| A | B |\n| --- | --- |\n| x | <script>alert(1)</script> |"
         )
-        self.assertIn("<h1>Informe</h1>", rendered)
+        self.assertIn("<h1>Report</h1>", rendered)
         self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", rendered)
 
 
