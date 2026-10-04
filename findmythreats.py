@@ -201,8 +201,7 @@ def load_controls(path: Path = DEFAULT_CONTROLS_FILE) -> list[dict]:
         check(all(isinstance(value, str) for value in control["stride"]), f"invalid STRIDE value in {control['id']}")
         check(set(control["stride"]) <= set(STRIDE), f"invalid STRIDE value in {control['id']}")
 
-    ids = [control["id"] for control in controls]
-    check(len(ids) == len(set(ids)), "control IDs must be unique")
+    unique_ids(controls, "control")
     return controls
 
 
@@ -306,6 +305,9 @@ def agent_generate_report(
         names[flow["id"]] = f"{names[flow['source']]} → {names[flow['target']]}"
 
     mapping_by_threat = {mapping["threat_id"]: mapping for mapping in mappings}
+    used_ids = {control_id for mapping in mappings for control_id in mapping["control_ids"]}
+    used_controls = [control for control in controls if control["id"] in used_ids]
+
     sections = [
         "# Threat Model",
         f"**Control catalog:** `{catalog_name}`",
@@ -353,10 +355,14 @@ def agent_generate_report(
                 for threat in threats
             ],
         ),
-        "## 4. Security Control Catalog",
+        "## 4. Selected Security Controls",
+        f"Controls referenced in this threat model: {len(used_controls)} of {len(controls)} from `{catalog_name}`.",
         table(
             ["ID", "Category", "Control", "Description", "Implementation"],
-            [[c["id"], c["category"], c["name"], c["description"], c["implementation"]] for c in controls],
+            [
+                [c["id"], c["category"], c["name"], c["description"], c["implementation"]]
+                for c in used_controls
+            ],
         ),
         "## 5. Limitations",
         (

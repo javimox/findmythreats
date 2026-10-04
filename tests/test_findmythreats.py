@@ -96,7 +96,13 @@ class FindMyThreatsTests(unittest.TestCase):
             self.assertIn("Web \\| interface", report)
             self.assertIn("| T1 | Frontend → Backend | Information Disclosure |", report)
             self.assertIn("| T1 | TRANS-001 | Use TLS. |", report)
-            self.assertIn("| SEC-003 | Secrets management |", report)
+            self.assertIn("## 4. Selected Security Controls", report)
+            self.assertIn(
+                "Controls referenced in this threat model: 2 of 15 from `m6t1_en.json`.",
+                report,
+            )
+            self.assertIn("| TRANS-001 | Data in transit |", report)
+            self.assertNotIn("| SEC-003 |", report)
 
     def test_pipeline_reports_progress(self):
         answers = {
@@ -177,12 +183,14 @@ class FindMyThreatsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder, mock.patch.object(web, "CONTROLS", Path(folder)):
             controls_dir = Path(folder)
             (controls_dir / "m6t1_en.json").write_text("[]", encoding="utf-8")
+            (controls_dir / "m6t1_es.json").write_text("[]", encoding="utf-8")
             (controls_dir / "notes.txt").write_text("ignore", encoding="utf-8")
             (controls_dir / "nested.json").mkdir()
 
             catalogs = web.control_catalogs()
-            self.assertEqual(["m6t1_en.json"], list(catalogs))
+            self.assertEqual(["m6t1_en.json", "m6t1_es.json"], list(catalogs))
             self.assertEqual(controls_dir / "m6t1_en.json", catalogs["m6t1_en.json"])
+            self.assertEqual("m6t1_en.json", web.DEFAULT_CONTROLS)
             self.assertIsNone(catalogs.get("../m6t1_en.json"))
 
     def test_web_markdown_renderer_escapes_html(self):

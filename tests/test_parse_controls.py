@@ -36,7 +36,10 @@ SAMPLE_OSCAL = {
                                 },
                             },
                         ],
-                        "props": [{"name": "label", "value": "AC-1"}],
+                        "props": [
+                            {"name": "label", "value": "AC-01"},
+                            {"name": "label", "value": "AC-1"},
+                        ],
                         "parts": [
                             {
                                 "name": "statement",
@@ -55,7 +58,13 @@ SAMPLE_OSCAL = {
                                 "parts": [{"name": "statement", "prose": "Nested enhancement."}],
                             }
                         ],
-                    }
+                    },
+                    {
+                        "id": "ac-13",
+                        "title": "Supervision and Review — Access Control",
+                        "props": [{"name": "status", "value": "Withdrawn"}],
+                        "parts": [],
+                    },
                 ],
             },
             {
@@ -86,10 +95,10 @@ class ParseControlsTests(unittest.TestCase):
             self.assertEqual(1, len(controls))
             self.assertEqual("AC-1", controls[0]["id"])
             self.assertEqual("Access Control", controls[0]["category"])
-            self.assertIn("organization-defined personnel", controls[0]["description"])
+            self.assertIn("[organization-defined personnel]", controls[0]["description"])
             self.assertIn("one or more of", controls[0]["description"])
             self.assertIn("organization-level", controls[0]["description"])
-            self.assertIn("organization-defined value", controls[0]["implementation"])
+            self.assertIn("[organization-defined value]", controls[0]["implementation"])
             self.assertEqual([], controls[0]["stride"])
             self.assertNotIn("{{ insert:", json.dumps(controls))
 

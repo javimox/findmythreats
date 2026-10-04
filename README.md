@@ -89,7 +89,7 @@ Persisting each stage also makes the pipeline auditable and lets individual outp
 
 ## Security controls
 
-`controls/m6t1.json` is the default catalog. It defines 15 controls across five categories, three per category:
+`controls/m6t1_en.json` is the default catalog. It defines 15 controls across five categories, three per category:
 
 - Authentication
 - Authorization
@@ -144,7 +144,9 @@ findmythreats/
 ├── findmythreats.py
 ├── parse_controls.py
 ├── controls/
-│   └── m6t1.json
+│   ├── m6t1_en.json
+│   ├── m6t1_es.json
+│   └── nist_sp_800_53.json
 ├── web.py
 ├── web.html
 ├── input/

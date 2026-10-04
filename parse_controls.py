@@ -38,7 +38,7 @@ def _parameter_map(*param_groups: list[dict]) -> dict[str, str]:
 
             label = param.get("label")
             if isinstance(label, str) and label.strip():
-                values[param_id] = label.strip()
+                values[param_id] = f"[{label.strip()}]"
                 continue
 
             selection = param.get("select")
@@ -121,7 +121,7 @@ def parse_nist(source: Path, families: set[str]) -> list[dict]:
                 continue
 
             params = _parameter_map(catalog_params, group_params, control.get("params", []))
-            control_id = _prop(control, "label").strip() or str(control.get("id", "")).upper()
+            control_id = str(control.get("id", "")).upper()
             title = str(control.get("title", "")).strip()
             if not control_id or not title:
                 raise ValueError(f"invalid control in NIST family {family}")
