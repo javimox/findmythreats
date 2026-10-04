@@ -18,13 +18,21 @@ from urllib.parse import unquote
 
 from findmythreats import LLM, LLMError, create_run_directory, run_pipeline
 
-ROOT = Path(__file__).parent
+ROOT = Path(__file__).resolve().parent
 PAGE = ROOT / "web.html"
 OUTPUT = ROOT / "output"
+CONTROLS = ROOT / "controls"
+DEFAULT_CONTROLS = "m6t1.json"
 IMAGE_TYPES = {"image/png": ".png", "image/jpeg": ".jpg", "image/webp": ".webp"}
 MAX_UPLOAD = 20 * 1024 * 1024
 ARTIFACTS = ("1_components.json", "2_threats.json", "3_mappings.json", "4_threat_model.md")
 LIST_ITEM = re.compile(r"\s*([-*]|\d+\.) ")
+
+
+def control_catalogs() -> dict[str, Path]:
+    """Return selectable control catalogs from controls/."""
+    return {path.name: path for path in sorted(CONTROLS.glob("*.json")) if path.is_file()}
+
 
 REPORT_HEAD = """<!doctype html>
 <html lang="es"><meta charset="utf-8">
@@ -75,6 +83,11 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             self.reply(200, "text/html; charset=utf-8", PAGE.read_bytes())
+        elif self.path == "/controls":
+            catalogs = control_catalogs()
+            names = list(catalogs)
+            default = DEFAULT_CONTROLS if DEFAULT_CONTROLS in catalogs else (names[0] if names else None)
+            self.reply_json(200, {"controls": names, "default": default})
         else:
             super().do_GET()
 
@@ -84,11 +97,15 @@ class Handler(SimpleHTTPRequestHandler):
 
         base_url = self.headers.get("X-LLM-URL", "")
         model = self.headers.get("X-LLM-Model", "")
+        catalog_name = self.headers.get("X-Controls") or DEFAULT_CONTROLS
+        controls_file = control_catalogs().get(catalog_name)
         suffix = IMAGE_TYPES.get(self.headers.get("Content-Type"))
         length = self.headers.get("Content-Length", "")
         size = int(length) if length.isdigit() else 0
         image_bytes = self.rfile.read(size) if 0 < size <= MAX_UPLOAD else b""
 
+        if controls_file is None:
+            return self.reply_json(400, {"error": "El catálogo de controles seleccionado no existe."})
         if not (base_url.startswith(("http://", "https://")) and model and suffix and image_bytes):
             return self.reply_json(400, {"error": "Indica URL, modelo y una imagen PNG, JPG o WebP de hasta 20 MB."})
 
@@ -100,7 +117,7 @@ class Handler(SimpleHTTPRequestHandler):
         started = time.perf_counter()
         try:
             llm = LLM(base_url, self.headers.get("X-LLM-Key") or "ollama", model)
-            report = run_pipeline(llm, image, out_dir)
+            report = run_pipeline(llm, image, out_dir, controls_file)
         except (LLMError, ValueError, OSError) as exc:
             return self.reply_json(502, {"error": str(exc)})
 
