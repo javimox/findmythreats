@@ -14,8 +14,8 @@ The process is divided into four steps:
 An LLM with vision capabilities (VLM) is required for processing the diagrams.  
 FindMyThreats talks to any endpoint that exposes the Chat Completions API:
 
-  * Cloud providers such as Anthropic or OpenAI
-  * Local servers such as Ollama, LM Studio, or vLLM.
+- cloud providers such as Anthropic or OpenAI
+- local servers such as Ollama, LM Studio, or vLLM.
 
 ## Usage
 
@@ -77,13 +77,12 @@ Each analysis generates:
 
 | File | Content |
 |---|---|
-| `diagram.<ext>` | copy of the analyzed architecture diagram |
 | `1_components.json` | components and data flows extracted from the diagram |
 | `2_threats.json` | identified STRIDE threats |
 | `3_mappings.json` | mapping between threats and security controls |
 | `4_threat_model.md` | final threat-model report |
 
-Web runs also generate a `4_threat_model.html` copy of the report for browser visualization.
+Web runs also keep the uploaded diagram and a `4_threat_model.html` copy of the report for the browser.
 
 ## Security controls
 

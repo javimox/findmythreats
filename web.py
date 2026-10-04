@@ -110,30 +110,52 @@ class Handler(SimpleHTTPRequestHandler):
             return self.reply_json(400, {"error": "Indica URL, modelo y una imagen PNG, JPG o WebP de hasta 20 MB."})
 
         filename = Path(unquote(self.headers.get("X-File-Name") or f"diagram{suffix}")).name
-        out_dir = create_run_directory(filename, OUTPUT)
-        image = out_dir / f"diagram{suffix}"
-        image.write_bytes(image_bytes)
+        try:
+            out_dir = create_run_directory(filename, OUTPUT)
+            image = out_dir / f"diagram{suffix}"
+            image.write_bytes(image_bytes)
+        except OSError as exc:
+            return self.reply_json(500, {"error": str(exc)})
 
+        self.start_stream()
         started = time.perf_counter()
+
+        def progress(step: int, message: str) -> None:
+            self.stream_json({"type": "progress", "step": step, "total": 4, "message": message})
+
         try:
             llm = LLM(base_url, self.headers.get("X-LLM-Key") or "ollama", model)
-            report = run_pipeline(llm, image, out_dir, controls_file)
+            report = run_pipeline(llm, image, out_dir, controls_file, progress=progress)
+            report.with_suffix(".html").write_text(
+                REPORT_HEAD + markdown_to_html(report.read_text(encoding="utf-8")), encoding="utf-8"
+            )
+            files = [
+                {"name": name, "size": (out_dir / name).stat().st_size}
+                for name in ARTIFACTS
+                if (out_dir / name).is_file()
+            ]
         except (LLMError, ValueError, OSError) as exc:
-            return self.reply_json(502, {"error": str(exc)})
+            self.stream_json({"type": "error", "error": str(exc)})
+            return
 
-        report.with_suffix(".html").write_text(
-            REPORT_HEAD + markdown_to_html(report.read_text(encoding="utf-8")), encoding="utf-8"
-        )
-        files = [
-            {"name": name, "size": (out_dir / name).stat().st_size}
-            for name in ARTIFACTS
-            if (out_dir / name).is_file()
-        ]
-        self.reply_json(200, {
+        self.stream_json({
+            "type": "complete",
             "run": out_dir.name,
             "files": files,
             "elapsed": round(time.perf_counter() - started, 1),
         })
+
+    def start_stream(self) -> None:
+        self.send_response(200)
+        self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Connection", "close")
+        self.end_headers()
+        self.close_connection = True
+
+    def stream_json(self, data: dict) -> None:
+        self.wfile.write((json.dumps(data, ensure_ascii=False) + "\n").encode("utf-8"))
+        self.wfile.flush()
 
     def reply_json(self, status: int, data: dict) -> None:
         self.reply(status, "application/json", json.dumps(data).encode())

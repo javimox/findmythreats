@@ -391,24 +391,26 @@ def run_pipeline(
     image: Path,
     out_dir: Path,
     controls_file: Path = DEFAULT_CONTROLS_FILE,
+    progress=None,
 ) -> Path:
     """Ejecuta los cuatro procesos y devuelve la ruta del informe generado."""
     controls = load_controls(controls_file)
     out_dir.mkdir(parents=True, exist_ok=True)
+    notify = progress or (lambda step, message: print(f"[{step}/4] {message}"))
 
-    print("[1/4] Extracción de componentes")
+    notify(1, "Extracción de componentes")
     architecture = agent_extract_components(llm, image)
     save_json(out_dir / "1_components.json", architecture)
 
-    print("[2/4] Identificación de amenazas")
+    notify(2, "Identificación de amenazas")
     threats = agent_identify_threats(llm, architecture)
     save_json(out_dir / "2_threats.json", threats)
 
-    print("[3/4] Mapeo a controles")
+    notify(3, "Mapeo a controles")
     mappings = agent_map_controls(llm, threats, controls)
     save_json(out_dir / "3_mappings.json", mappings)
 
-    print("[4/4] Generación del informe")
+    notify(4, "Generación del informe")
     image_link = Path(os.path.relpath(image.resolve(), out_dir.resolve())).as_posix()
     report = agent_generate_report(architecture, threats, mappings, controls, image_link, controls_file.name)
     report_path = out_dir / "4_threat_model.md"
