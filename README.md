@@ -8,7 +8,7 @@ The process is divided into four steps:
 
 1. extract components and data flows;
 2. identify threats using STRIDE;
-3. map threats to a selected security-control catalog;
+3. map threats to a security-control catalog;
 4. generate a final threat-model report.
 
 An LLM with vision capabilities (VLM) is required for processing the diagrams.  
@@ -83,6 +83,9 @@ Each analysis generates:
 | `4_threat_model.md` | final threat-model report |
 
 Web runs also keep the uploaded diagram and a `4_threat_model.html` copy of the report for the browser.
+
+JSON is used between stages to keep intermediate data structured, explicit, and easy to validate before the next step.
+Persisting each stage also makes the pipeline auditable and lets individual outputs be inspected, reused, or integrated with other tools.
 
 ## Security controls
 
