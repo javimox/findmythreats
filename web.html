@@ -51,9 +51,9 @@
   <p class="lead">Modelado de amenazas automático a partir de un diagrama de arquitectura.</p>
 
   <div class="pipeline" aria-label="Flujo del análisis">
-    <span class="step">Diagrama</span><span class="arrow">→</span><span class="step">1 · Componentes</span>
-    <span class="arrow">→</span><span class="step">2 · Amenazas</span><span class="arrow">→</span>
-    <span class="step">3 · Controles</span><span class="arrow">→</span><span class="step">4 · Informe</span>
+    <span class="step">Diagrama</span><span class="arrow">→</span><span class="step">Componentes</span>
+    <span class="arrow">→</span><span class="step">Amenazas</span><span class="arrow">→</span>
+    <span class="step">Controles</span><span class="arrow">→</span><span class="step">Informe</span>
   </div>
 
   <form id="form" autocomplete="off">
@@ -90,13 +90,13 @@
   </form>
 
   <section id="progress-panel" class="panel progress-panel" hidden aria-live="polite">
-    <div class="progress-head"><strong>Análisis en curso</strong><span id="progress-status">Preparando…</span></div>
+    <div class="progress-head"><strong>Análisis en curso</strong><span><span id="progress-status">Preparando…</span> · <time id="progress-elapsed">00:00</time></span></div>
     <progress id="progress-bar" max="4" value="0"></progress>
     <ol id="progress-steps" class="progress-steps">
-      <li data-step="1">1 · Extracción de componentes</li>
-      <li data-step="2">2 · Identificación de amenazas</li>
-      <li data-step="3">3 · Mapeo a controles</li>
-      <li data-step="4">4 · Generación del informe</li>
+      <li data-step="1">Extracción de componentes</li>
+      <li data-step="2">Identificación de amenazas</li>
+      <li data-step="3">Mapeo a controles</li>
+      <li data-step="4">Generación del informe</li>
     </ol>
   </section>
 
@@ -114,7 +114,7 @@
     </section>
 
     <section class="panel">
-      <div class="report-head"><div><h2>Informe final</h2><span class="hint">Vista renderizada de <code>4_threat_model.md</code>.</span></div><a id="open-report" target="_blank">Abrir en nueva pestaña ↗</a></div>
+      <div class="report-head"><div><h2>Informe final</h2><span class="hint">Vista renderizada de <code id="report-path">4_threat_model.md</code>.</span></div><a id="open-report" target="_blank">Abrir en nueva pestaña ↗</a></div>
       <iframe id="report" sandbox title="Informe de modelado de amenazas"></iframe>
     </section>
   </section>
@@ -130,7 +130,11 @@
   const progressPanel = document.getElementById("progress-panel");
   const progressBar = document.getElementById("progress-bar");
   const progressStatus = document.getElementById("progress-status");
+  const progressElapsed = document.getElementById("progress-elapsed");
+  const reportPath = document.getElementById("report-path");
   const progressSteps = [...document.querySelectorAll("#progress-steps li")];
+  let timerId = null;
+  let timerStartedAt = 0;
   const labels = {
     "1_components.json": ["Arquitectura", "Componentes y flujos"],
     "2_threats.json": ["Amenazas", "Análisis STRIDE"],
@@ -141,6 +145,16 @@
   function say(text, error=false){message.textContent=text;message.classList.toggle("error",error)}
   function size(bytes){return bytes < 1024 ? `${bytes} B` : `${(bytes/1024).toFixed(1)} KB`}
   function duration(seconds){const s=Math.round(seconds);return s<60?`${s} s`:`${Math.floor(s/60)} min ${s%60} s`}
+  function timerText(seconds){const s=Math.max(0,Math.floor(seconds));return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
+  function startTimer(){
+    if(timerId) clearInterval(timerId);
+    timerStartedAt=Date.now(); progressElapsed.textContent="00:00";
+    timerId=setInterval(()=>progressElapsed.textContent=timerText((Date.now()-timerStartedAt)/1000),1000);
+  }
+  function stopTimer(){
+    if(timerId){clearInterval(timerId);timerId=null}
+    if(timerStartedAt) progressElapsed.textContent=timerText((Date.now()-timerStartedAt)/1000);
+  }
   function resetProgress(){
     progressPanel.hidden=false; progressBar.value=0; progressStatus.textContent="Preparando…";
     progressSteps.forEach(step=>step.className="");
@@ -205,8 +219,8 @@
 
   form.addEventListener("submit",async event=>{
     event.preventDefault(); const data=new FormData(form), button=form.querySelector("button");
-    button.disabled=true; result.hidden=true; document.body.classList.add("running"); resetProgress();
-    say("Analizando el diagrama. Un modelo local puede tardar varios minutos…");
+    button.disabled=true; result.hidden=true; document.body.classList.add("running"); resetProgress(); startTimer();
+    say("");
     try{
       const image=data.get("image");
       const response=await fetch("/analyze",{method:"POST",body:image,headers:{
@@ -223,10 +237,11 @@
       document.getElementById("file-count").textContent=`${answer.files.length} ficheros`;
       document.getElementById("elapsed").textContent=`Procesado en ${duration(answer.elapsed)}`;
       const report=`/${answer.run}/4_threat_model.html`;
+      reportPath.textContent=`output/${answer.run}/4_threat_model.md`;
       document.getElementById("report").src=report; document.getElementById("open-report").href=report;
       result.hidden=false; say(""); result.scrollIntoView({behavior:"smooth"});
     }catch(error){progressStatus.textContent="Interrumpido";say(`No se pudo analizar el diagrama: ${error.message}`,true)}
-    finally{button.disabled=false;document.body.classList.remove("running")}
+    finally{stopTimer();button.disabled=false;document.body.classList.remove("running")}
   });
 </script>
 </html>
