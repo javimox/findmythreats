@@ -34,7 +34,9 @@ Open `http://127.0.0.1:8000`. The web interface lets you:
 - drag and drop or select a PNG, JPG, or WebP diagram, and preview it;
 - see how long the analysis took;
 - download each generated artifact;
+- load and render previous reports stored under `output/`, including CLI-generated reports;
 - read the final report directly in the browser.
+- open this README in a separate browser tab.
 
 The API key is used only for the request and is **never written to disk**. The server listens only on `127.0.0.1`: it calls whatever LLM URL you give it, so it should not be exposed to a network. The report is rendered from escaped content in a sandboxed `iframe`, under a restrictive Content Security Policy.
 
@@ -146,7 +148,8 @@ findmythreats/
 ├── controls/
 │   ├── m6t1_en.json
 │   ├── m6t1_es.json
-│   └── nist_sp_800_53.json
+│   ├── nist_sp_800_53.json
+│   └── ...
 ├── web.py
 ├── web.html
 ├── input/

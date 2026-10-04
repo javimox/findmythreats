@@ -202,6 +202,38 @@ class FindMyThreatsTests(unittest.TestCase):
         self.assertIn("<h1>Report</h1>", rendered)
         self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", rendered)
 
+    def test_web_markdown_renderer_supports_fenced_code(self):
+        import web
+
+        rendered = web.markdown_to_html("```bash\npython web.py\n```")
+        self.assertIn("<pre><code>python web.py</code></pre>", rendered)
+
+    def test_web_report_page_sets_base_for_run_assets(self):
+        import web
+
+        rendered = web.render_page(
+            "![Architecture diagram](diagram.png)",
+            "Threat Model",
+            "/diagram-20261004-120000-ab12/",
+        )
+        self.assertIn('<base href="/diagram-20261004-120000-ab12/">', rendered)
+        self.assertIn('src="diagram.png"', rendered)
+
+    def test_web_available_reports_only_lists_runs_with_reports(self):
+        import web
+
+        with tempfile.TemporaryDirectory() as folder, mock.patch.object(web, "OUTPUT", Path(folder)):
+            output = Path(folder)
+            valid = output / "diagram-20261004-120000-ab12"
+            valid.mkdir()
+            (valid / "4_threat_model.md").write_text("# Report", encoding="utf-8")
+            (output / "incomplete-run").mkdir()
+            (output / "not-a-run.txt").write_text("ignore", encoding="utf-8")
+
+            reports = web.available_reports()
+            self.assertEqual([valid.name], list(reports))
+            self.assertIsNone(reports.get("../README.md"))
+
 
 if __name__ == "__main__":
     unittest.main()
