@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""M6T1 - Automatización del modelado de amenazas desde un diagrama.
+"""FindMyThreats - Automatización del modelado de amenazas desde un diagrama.
 
 Cuatro procesos: extracción, amenazas STRIDE, mapeo de controles e informe.
 Solo usa la biblioteca estándar de Python.
@@ -13,11 +13,11 @@ import os
 import sys
 import urllib.error
 import urllib.request
-from collections import Counter
 from pathlib import Path
 
 BASE_URL = "http://localhost:11434/v1"
-CONTROLS_FILE = Path(__file__).with_name("controls.json")
+ROOT = Path(__file__).resolve().parent
+DEFAULT_CONTROLS_FILE = ROOT / "controls" / "m6t1.json"
 TYPES = ("entidad externa", "proceso", "almacén de datos")
 STRIDE = (
     "Spoofing",
@@ -175,19 +175,29 @@ def unique_ids(items: list[dict], what: str) -> set[str]:
     return set(ids)
 
 
-def load_controls() -> list[dict]:
-    controls = json.loads(CONTROLS_FILE.read_text(encoding="utf-8"))
-    check(isinstance(controls, list), "controls.json debe contener una lista")
-    check(len(controls) == 15, "el catálogo debe contener exactamente 15 controles")
-    check(len({control["id"] for control in controls}) == 15, "los IDs de controles deben ser únicos")
+def load_controls(path: Path = DEFAULT_CONTROLS_FILE) -> list[dict]:
+    controls = json.loads(path.read_text(encoding="utf-8"))
+    check(isinstance(controls, list) and controls, f"{path.name} debe contener una lista de controles")
 
-    counts = Counter(control["category"] for control in controls)
-    check(len(counts) == 5 and set(counts.values()) == {3}, "debe haber 5 categorías con 3 controles cada una")
+    required = {"id", "category", "name", "description"}
+    for index, control in enumerate(controls, start=1):
+        check(isinstance(control, dict), f"control {index}: debe ser un objeto JSON")
+        missing = required - control.keys()
+        check(not missing, f"control {index}: faltan campos {', '.join(sorted(missing))}")
+        for field in required:
+            check(isinstance(control[field], str) and control[field].strip(), f"{control['id']}: {field} no es válido")
 
-    required = {"id", "category", "name", "description", "implementation", "references", "stride"}
-    for control in controls:
-        check(required <= control.keys(), f"faltan campos en {control.get('id', '?')}")
-        check(control["stride"] and set(control["stride"]) <= set(STRIDE), f"STRIDE inválido en {control['id']}")
+        control.setdefault("implementation", "")
+        control.setdefault("references", [])
+        control.setdefault("stride", [])
+        check(isinstance(control["implementation"], str), f"{control['id']}: implementation debe ser texto")
+        check(isinstance(control["references"], list), f"{control['id']}: references debe ser una lista")
+        check(isinstance(control["stride"], list), f"{control['id']}: stride debe ser una lista")
+        check(all(isinstance(value, str) for value in control["stride"]), f"STRIDE inválido en {control['id']}")
+        check(set(control["stride"]) <= set(STRIDE), f"STRIDE inválido en {control['id']}")
+
+    ids = [control["id"] for control in controls]
+    check(len(ids) == len(set(ids)), "los IDs de controles deben ser únicos")
     return controls
 
 
@@ -236,7 +246,8 @@ def validate_mappings(data: dict, threats: list[dict], controls: list[dict]) -> 
     for mapping in mappings:
         ids = mapping["control_ids"]
         check(isinstance(ids, list) and 1 <= len(ids) <= 3, f"{mapping['threat_id']}: se esperan entre 1 y 3 controles")
-        check(set(ids) <= control_ids, f"{mapping['threat_id']}: contiene un control inexistente")
+        unknown = sorted(set(ids) - control_ids)
+        check(not unknown, f"{mapping['threat_id']}: control inexistente: {', '.join(unknown)}")
         check(mapping["recommendation"], f"{mapping['threat_id']}: falta recommendation")
 
 
@@ -252,10 +263,12 @@ def agent_identify_threats(llm: LLM, architecture: dict) -> list[dict]:
 
 
 def agent_map_controls(llm: LLM, threats: list[dict], controls: list[dict]) -> list[dict]:
-    compact_controls = [
-        {key: control[key] for key in ("id", "category", "name", "description", "stride")}
-        for control in controls
-    ]
+    compact_controls = []
+    for control in controls:
+        compact = {key: control[key] for key in ("id", "category", "name", "description")}
+        if control["stride"]:
+            compact["stride"] = control["stride"]
+        compact_controls.append(compact)
     prompt = (
         f"{PROMPT_MAPPINGS}\n\nAmenazas:\n{dump(threats)}"
         f"\n\nCatálogo de controles:\n{dump(compact_controls)}"
@@ -279,6 +292,7 @@ def agent_generate_report(
     mappings: list[dict],
     controls: list[dict],
     image_name: str,
+    catalog_name: str,
 ) -> str:
     """Genera el informe final desde los resultados ya validados."""
     components = {component["id"]: component for component in architecture["components"]}
@@ -289,6 +303,7 @@ def agent_generate_report(
     mapping_by_threat = {mapping["threat_id"]: mapping for mapping in mappings}
     sections = [
         "# Modelo de amenazas",
+        f"**Catálogo de controles:** `{catalog_name}`",
         "## 1. Arquitectura analizada",
         f"![Diagrama de arquitectura]({image_name})",
         table(
@@ -351,9 +366,14 @@ def save_json(path: Path, value) -> None:
     path.write_text(dump(value) + "\n", encoding="utf-8")
 
 
-def run_pipeline(llm: LLM, image: Path, out_dir: Path) -> Path:
+def run_pipeline(
+    llm: LLM,
+    image: Path,
+    out_dir: Path,
+    controls_file: Path = DEFAULT_CONTROLS_FILE,
+) -> Path:
     """Ejecuta los cuatro procesos y devuelve la ruta del informe generado."""
-    controls = load_controls()
+    controls = load_controls(controls_file)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print("[1/4] Extracción de componentes")
@@ -370,7 +390,7 @@ def run_pipeline(llm: LLM, image: Path, out_dir: Path) -> Path:
 
     print("[4/4] Generación del informe")
     image_link = Path(os.path.relpath(image.resolve(), out_dir.resolve())).as_posix()
-    report = agent_generate_report(architecture, threats, mappings, controls, image_link)
+    report = agent_generate_report(architecture, threats, mappings, controls, image_link, controls_file.name)
     report_path = out_dir / "4_threat_model.md"
     report_path.write_text(report, encoding="utf-8")
     return report_path
@@ -382,6 +402,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--model", default=os.getenv("LLM_MODEL"), help="modelo con visión; también LLM_MODEL")
     parser.add_argument("--base-url", default=os.getenv("LLM_BASE_URL", BASE_URL), help="también LLM_BASE_URL")
     parser.add_argument("--api-key", default=os.getenv("LLM_API_KEY", "ollama"), help="también LLM_API_KEY")
+    parser.add_argument(
+        "--controls",
+        type=Path,
+        default=DEFAULT_CONTROLS_FILE,
+        help="catálogo JSON; por defecto controls/m6t1.json",
+    )
     parser.add_argument("--out-dir", type=Path, help="por defecto output/<nombre-diagrama>")
     args = parser.parse_args(argv)
 
@@ -389,10 +415,17 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"no existe el diagrama {args.image}")
     if not args.model:
         parser.error("indica --model o define LLM_MODEL")
+    if not args.controls.is_file():
+        parser.error(f"no existe el catálogo de controles {args.controls}")
 
     out_dir = args.out_dir or Path("output") / args.image.stem
     try:
-        report = run_pipeline(LLM(args.base_url, args.api_key, args.model), args.image, out_dir)
+        report = run_pipeline(
+            LLM(args.base_url, args.api_key, args.model),
+            args.image,
+            out_dir,
+            args.controls,
+        )
         print(f"Informe generado: {report}")
         return 0
     except (LLMError, ValueError, OSError) as exc:

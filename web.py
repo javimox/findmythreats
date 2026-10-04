@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Interfaz web ligera para threat_modeler.py. Solo biblioteca estándar.
+"""Interfaz web ligera para findmythreats.py. Solo biblioteca estándar.
 
     python web.py [puerto]        # http://127.0.0.1:8000
 
@@ -17,7 +17,7 @@ from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from threat_modeler import LLM, LLMError, run_pipeline
+from findmythreats import LLM, LLMError, run_pipeline
 
 ROOT = Path(__file__).parent
 PAGE = ROOT / "web.html"
@@ -43,7 +43,7 @@ border:1px solid #d5dbe3;border-radius:.35rem}code{padding:.1rem .3rem;backgroun
 
 
 def markdown_to_html(markdown: str) -> str:
-    """Renderiza el subconjunto de Markdown que genera threat_modeler.py."""
+    """Renderiza el subconjunto de Markdown que genera findmythreats.py."""
 
     def inline(text: str) -> str:
         text = html.escape(text.replace("\\|", "|"))
