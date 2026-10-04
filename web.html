@@ -17,9 +17,9 @@
   form{display:grid;grid-template-columns:22rem 1fr;gap:1rem}.panel{background:var(--surface);border:1px solid var(--line);border-radius:.65rem;padding:1.2rem}
   .section-title{display:flex;gap:.65rem;align-items:center;margin-bottom:1rem}.number{display:grid;place-items:center;width:1.8rem;height:1.8rem;
     border-radius:.4rem;background:var(--ink);color:#fff;font-weight:700;font-size:.85rem}
-  label.field{display:grid;gap:.35rem;margin:.9rem 0;font-size:.84rem;font-weight:650}input:not([type=file]){width:100%;padding:.62rem .7rem;
+  label.field{display:grid;gap:.35rem;margin:.9rem 0;font-size:.84rem;font-weight:650}input:not([type=file]),select{width:100%;padding:.62rem .7rem;
     border:1px solid var(--line);border-radius:.4rem;color:var(--ink);background:#fff;font:.86rem var(--mono)}
-  input:focus{outline:2px solid #245aa833;outline-offset:1px;border-color:var(--blue)}
+  input:focus,select:focus{outline:2px solid #245aa833;outline-offset:1px;border-color:var(--blue)}
   .hint{font-size:.78rem;color:var(--muted);font-weight:400}.drop{position:relative;display:grid;place-content:center;justify-items:center;gap:.45rem;
     min-height:18rem;padding:1.5rem;text-align:center;cursor:pointer;border:2px dashed var(--accent);border-radius:.8rem;background:#b3261e08}
   .drop.over{background:#b3261e12;border-style:solid}.drop input{position:absolute;opacity:0;pointer-events:none}.drop strong{font-size:1.15rem}
@@ -64,6 +64,10 @@
       <label class="field">API key <span class="hint">(opcional)</span>
         <input name="key" type="password" autocomplete="off" placeholder="Déjala vacía si no hace falta">
       </label>
+      <label class="field">Catálogo de controles
+        <select name="controls" required></select>
+        <span class="hint">Catálogos disponibles en <code>controls/</code>.</span>
+      </label>
       <button>Analizar diagrama</button>
     </section>
 
@@ -104,6 +108,7 @@
   const form = document.getElementById("form");
   const drop = document.getElementById("drop");
   const picker = form.elements.image;
+  const controls = form.elements.controls;
   const message = document.getElementById("message");
   const result = document.getElementById("result");
   const labels = {
@@ -116,6 +121,18 @@
   function say(text, error=false){message.textContent=text;message.classList.toggle("error",error)}
   function size(bytes){return bytes < 1024 ? `${bytes} B` : `${(bytes/1024).toFixed(1)} KB`}
   function duration(seconds){const s=Math.round(seconds);return s<60?`${s} s`:`${Math.floor(s/60)} min ${s%60} s`}
+  async function loadControls(){
+    try{
+      const response=await fetch("/controls"), answer=await response.json();
+      if(!response.ok||!answer.controls.length) throw new Error("no hay catálogos disponibles");
+      const options=answer.controls.map(name=>{const option=document.createElement("option");option.value=name;option.textContent=name;return option});
+      controls.replaceChildren(...options); controls.value=answer.default||answer.controls[0];
+    }catch(error){
+      controls.disabled=true; form.querySelector("button").disabled=true;
+      say(`No se pudieron cargar los catálogos de controles: ${error.message}`,true);
+    }
+  }
+
   function showPreview(){
     const file=picker.files[0], preview=document.getElementById("preview");
     preview.hidden=!file; document.getElementById("upload-mark").hidden=Boolean(file);
@@ -134,6 +151,8 @@
     picker.files=event.dataTransfer.files; say(""); showPreview();
   });
 
+  loadControls();
+
   form.addEventListener("submit",async event=>{
     event.preventDefault(); const data=new FormData(form), button=form.querySelector("button");
     button.disabled=true; result.hidden=true; document.body.classList.add("running");
@@ -142,7 +161,7 @@
       const image=data.get("image");
       const response=await fetch("/analyze",{method:"POST",body:image,headers:{
         "X-LLM-URL":data.get("url"),"X-LLM-Model":data.get("model"),"X-LLM-Key":data.get("key"),
-        "X-File-Name":encodeURIComponent(image.name)}});
+        "X-Controls":data.get("controls"),"X-File-Name":encodeURIComponent(image.name)}});
       const answer=await response.json(); if(!response.ok) throw new Error(answer.error);
       const cards=answer.files.map(file=>{
         const [title,desc]=labels[file.name]||[file.name,""]; const card=document.createElement("div"); card.className="file-card";

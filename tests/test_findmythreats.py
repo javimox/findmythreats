@@ -144,6 +144,25 @@ class FindMyThreatsTests(unittest.TestCase):
             self.assertIn("`custom.json`", report)
             self.assertIn("CUSTOM-001", report)
 
+    def test_run_directory_sanitizes_filename(self):
+        with tempfile.TemporaryDirectory() as folder:
+            run_dir = tm.create_run_directory("$(touch pwned).png", Path(folder))
+            self.assertRegex(run_dir.name, r"^touch-pwned-\d{8}-\d{6}-[a-z0-9]{4}$")
+
+    def test_web_control_catalogs_lists_json_files_only(self):
+        import web
+
+        with tempfile.TemporaryDirectory() as folder, mock.patch.object(web, "CONTROLS", Path(folder)):
+            controls_dir = Path(folder)
+            (controls_dir / "m6t1.json").write_text("[]", encoding="utf-8")
+            (controls_dir / "notes.txt").write_text("ignore", encoding="utf-8")
+            (controls_dir / "nested.json").mkdir()
+
+            catalogs = web.control_catalogs()
+            self.assertEqual(["m6t1.json"], list(catalogs))
+            self.assertEqual(controls_dir / "m6t1.json", catalogs["m6t1.json"])
+            self.assertIsNone(catalogs.get("../m6t1.json"))
+
     def test_web_markdown_renderer_escapes_html(self):
         import web
 

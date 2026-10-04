@@ -8,7 +8,7 @@ The process is divided into four steps:
 
 1. extract components and data flows;
 2. identify threats using STRIDE;
-3. map threats to a fixed security-control catalog;
+3. map threats to a selected security-control catalog;
 4. generate a final threat-model report.
 
 An LLM with vision capabilities (VLM) is required for processing the diagrams.  
@@ -30,6 +30,7 @@ python web.py
 Open `http://127.0.0.1:8000`. The web interface lets you:
 
 - configure the LLM URL, model, and optional API key;
+- select a control catalog from the JSON files available in `controls/`;
 - drag and drop or select a PNG, JPG, or WebP diagram, and preview it;
 - see how long the analysis took;
 - download each generated artifact;
@@ -56,6 +57,15 @@ python findmythreats.py input/architecture.png \
   --api-key '...'
 ```
 
+Use `--controls` to select a different catalog:
+
+```bash
+python findmythreats.py input/architecture.png \
+  --base-url http://localhost:11434/v1 \
+  --model model-name \
+  --controls controls/custom.json
+```
+
 `LLM_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY` can also be provided as environment variables.
 
 ## Generated files
@@ -67,12 +77,13 @@ Each analysis generates:
 
 | File | Content |
 |---|---|
+| `diagram.<ext>` | copy of the analyzed architecture diagram |
 | `1_components.json` | components and data flows extracted from the diagram |
 | `2_threats.json` | identified STRIDE threats |
 | `3_mappings.json` | mapping between threats and security controls |
 | `4_threat_model.md` | final threat-model report |
 
-Web runs also keep the uploaded diagram and a `4_threat_model.html` copy of the report for the browser.
+Web runs also generate a `4_threat_model.html` copy of the report for browser visualization.
 
 ## Security controls
 
@@ -86,7 +97,9 @@ Web runs also keep the uploaded diagram and a `4_threat_model.html` copy of the 
 
 Its identifiers are internal and do not correspond to a formal security standard.
 
-Normative security standards can also be used with `--controls`, provided they are converted to the same JSON schema and saved as `controls.json`.
+Other catalogs, like normative security standards, can be used as long as they follow
+the same JSON schema. Place them in `controls/` to make them selectable from the web
+interface, or pass any compatible file directly with `--controls` from the command line.
 
 Each control must provide:
 
