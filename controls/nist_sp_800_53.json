@@ -1,0 +1,915 @@
+[
+  {
+    "id": "AC-01",
+    "category": "Access Control",
+    "name": "Policy and Procedures",
+    "description": "Develop, document, and disseminate to organization-defined personnel or roles: [one or more of: organization-level; mission/business process-level; system-level] access control policy that: Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and Procedures to facilitate the implementation of the access control policy and the associated access controls; Designate an official to manage the development, documentation, and dissemination of the access control policy and procedures; and Review and update the current access control: Policy frequency and following events ; and Procedures frequency and following events.",
+    "implementation": "Access control policy and procedures address the controls in the AC family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of access control policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies reflecting the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to access control policy and procedures include assessment or audit findings, security incidents or breaches, or changes in laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-01"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-02",
+    "category": "Access Control",
+    "name": "Account Management",
+    "description": "Define and document the types of accounts allowed and specifically prohibited for use within the system; Assign account managers; Require prerequisites and criteria for group and role membership; Specify: Authorized users of the system; Group and role membership; and Access authorizations (i.e., privileges) and attributes (as required) for each account; Require approvals by personnel or roles for requests to create accounts; Create, enable, modify, disable, and remove accounts in accordance with policy, procedures, prerequisites, and criteria; Monitor the use of accounts; Notify account managers and personnel or roles within: time period when accounts are no longer required; time period when users are terminated or transferred; and time period when system usage or need-to-know changes for an individual; Authorize access to the system based on: A valid access authorization; Intended system usage; and attributes (as required); Review accounts for compliance with account management requirements frequency; Establish and implement a process for changing shared or group account authenticators (if deployed) when individuals are removed from the group; and Align account management processes with personnel termination and transfer processes.",
+    "implementation": "Examples of system account types include individual, shared, group, system, guest, anonymous, emergency, developer, temporary, and service. Identification of authorized system users and the specification of access privileges reflect the requirements in other controls in the security plan. Users requiring administrative privileges on system accounts receive additional scrutiny by organizational personnel responsible for approving such accounts and privileged access, including system owner, mission or business owner, senior agency information security officer, or senior agency official for privacy. Types of accounts that organizations may wish to prohibit due to increased risk include shared, group, emergency, anonymous, temporary, and guest accounts. Where access involves personally identifiable information, security programs collaborate with the senior agency official for privacy to establish the specific conditions for group and role membership; specify authorized users, group and role membership, and access authorizations for each account; and create, adjust, or remove system accounts in accordance with organizational policies. Policies can include such information as account expiration dates or other factors that trigger the disabling of accounts. Organizations may choose to define access privileges or other attributes by account, type of account, or a combination of the two. Examples of other attributes required for authorizing access include restrictions on time of day, day of week, and point of origin. In defining other system account attributes, organizations consider system-related requirements and mission/business requirements. Failure to consider these factors could affect system availability. Temporary and emergency accounts are intended for short-term use. Organizations establish temporary accounts as part of normal account activation procedures when there is a need for short-term accounts without the demand for immediacy in account activation. Organizations establish emergency accounts in response to crisis situations and with the need for rapid account activation. Therefore, emergency account activation may bypass normal account authorization processes. Emergency and temporary accounts are not to be confused with infrequently used accounts, including local logon accounts used for special tasks or when network resources are unavailable (may also be known as accounts of last resort). Such accounts remain available and are not subject to automatic disabling or removal dates. Conditions for disabling or deactivating accounts include when shared/group, emergency, or temporary accounts are no longer required and when individuals are transferred or terminated. Changing shared/group authenticators when members leave the group is intended to ensure that former group members do not retain access to the shared or group account. Some types of system accounts may require specialized training.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-02"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-03",
+    "category": "Access Control",
+    "name": "Access Enforcement",
+    "description": "Enforce approved authorizations for logical access to information and system resources in accordance with applicable access control policies.",
+    "implementation": "Access control policies control access between active entities or subjects (i.e., users or processes acting on behalf of users) and passive entities or objects (i.e., devices, files, records, domains) in organizational systems. In addition to enforcing authorized access at the system level and recognizing that systems can host many applications and services in support of mission and business functions, access enforcement mechanisms can also be employed at the application and service level to provide increased information security and privacy. In contrast to logical access controls that are implemented within the system, physical access controls are addressed by the controls in the Physical and Environmental Protection ( [PE](#pe) ) family.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-03"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-04",
+    "category": "Access Control",
+    "name": "Information Flow Enforcement",
+    "description": "Enforce approved authorizations for controlling the flow of information within the system and between connected systems based on information flow control policies.",
+    "implementation": "Information flow control regulates where information can travel within a system and between systems (in contrast to who is allowed to access the information) and without regard to subsequent accesses to that information. Flow control restrictions include blocking external traffic that claims to be from within the organization, keeping export-controlled information from being transmitted in the clear to the Internet, restricting web requests that are not from the internal web proxy server, and limiting information transfers between organizations based on data structures and content. Transferring information between organizations may require an agreement specifying how the information flow is enforced (see [CA-3](#ca-3) ). Transferring information between systems in different security or privacy domains with different security or privacy policies introduces the risk that such transfers violate one or more domain security or privacy policies. In such situations, information owners/stewards provide guidance at designated policy enforcement points between connected systems. Organizations consider mandating specific architectural solutions to enforce specific security and privacy policies. Enforcement includes prohibiting information transfers between connected systems (i.e., allowing access only), verifying write permissions before accepting information from another security or privacy domain or connected system, employing hardware mechanisms to enforce one-way information flows, and implementing trustworthy regrading mechanisms to reassign security or privacy attributes and labels. Organizations commonly employ information flow control policies and enforcement mechanisms to control the flow of information between designated sources and destinations within systems and between connected systems. Flow control is based on the characteristics of the information and/or the information path. Enforcement occurs, for example, in boundary protection devices that employ rule sets or establish configuration settings that restrict system services, provide a packet-filtering capability based on header information, or provide a message-filtering capability based on message content. Organizations also consider the trustworthiness of filtering and/or inspection mechanisms (i.e., hardware, firmware, and software components) that are critical to information flow enforcement. Control enhancements 3 through 32 primarily address cross-domain solution needs that focus on more advanced filtering techniques, in-depth analysis, and stronger flow enforcement mechanisms implemented in cross-domain products, such as high-assurance guards. Such capabilities are generally not available in commercial off-the-shelf products. Information flow enforcement also applies to control plane traffic (e.g., routing and DNS).",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-04"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-05",
+    "category": "Access Control",
+    "name": "Separation of Duties",
+    "description": "Identify and document duties of individuals ; and Define system access authorizations to support separation of duties.",
+    "implementation": "Separation of duties addresses the potential for abuse of authorized privileges and helps to reduce the risk of malevolent activity without collusion. Separation of duties includes dividing mission or business functions and support functions among different individuals or roles, conducting system support functions with different individuals, and ensuring that security personnel who administer access control functions do not also administer audit functions. Because separation of duty violations can span systems and application domains, organizations consider the entirety of systems and system components when developing policy on separation of duties. Separation of duties is enforced through the account management activities in [AC-2](#ac-2) , access control mechanisms in [AC-3](#ac-3) , and identity management activities in [IA-2](#ia-2), [IA-4](#ia-4) , and [IA-12](#ia-12).",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-05"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-06",
+    "category": "Access Control",
+    "name": "Least Privilege",
+    "description": "Employ the principle of least privilege, allowing only authorized accesses for users (or processes acting on behalf of users) that are necessary to accomplish assigned organizational tasks.",
+    "implementation": "Organizations employ least privilege for specific duties and systems. The principle of least privilege is also applied to system processes, ensuring that the processes have access to systems and operate at privilege levels no higher than necessary to accomplish organizational missions or business functions. Organizations consider the creation of additional processes, roles, and accounts as necessary to achieve least privilege. Organizations apply least privilege to the development, implementation, and operation of organizational systems.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-06"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-07",
+    "category": "Access Control",
+    "name": "Unsuccessful Logon Attempts",
+    "description": "Enforce a limit of number consecutive invalid logon attempts by a user during a time period ; and Automatically [one or more of: lock the account or node for time period; lock the account or node until released by an administrator; delay next logon prompt per delay algorithm; notify system administrator; take other action] when the maximum number of unsuccessful attempts is exceeded.",
+    "implementation": "The need to limit unsuccessful logon attempts and take subsequent action when the maximum number of attempts is exceeded applies regardless of whether the logon occurs via a local or network connection. Due to the potential for denial of service, automatic lockouts initiated by systems are usually temporary and automatically release after a predetermined, organization-defined time period. If a delay algorithm is selected, organizations may employ different algorithms for different components of the system based on the capabilities of those components. Responses to unsuccessful logon attempts may be implemented at the operating system and the application levels. Organization-defined actions that may be taken when the number of allowed consecutive invalid logon attempts is exceeded include prompting the user to answer a secret question in addition to the username and password, invoking a lockdown mode with limited user capabilities (instead of full lockout), allowing users to only logon from specified Internet Protocol (IP) addresses, requiring a CAPTCHA to prevent automated attacks, or applying user profiles such as location, time of day, IP address, device, or Media Access Control (MAC) address. If automatic system lockout or execution of a delay algorithm is not implemented in support of the availability objective, organizations consider a combination of other actions to help prevent brute force attacks. In addition to the above, organizations can prompt users to respond to a secret question before the number of allowed unsuccessful logon attempts is exceeded. Automatically unlocking an account after a specified period of time is generally not permitted. However, exceptions may be required based on operational mission or need.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-07"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-08",
+    "category": "Access Control",
+    "name": "System Use Notification",
+    "description": "Display system use notification to users before granting access to the system that provides privacy and security notices consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines and state that: Users are accessing a U.S. Government system; System usage may be monitored, recorded, and subject to audit; Unauthorized use of the system is prohibited and subject to criminal and civil penalties; and Use of the system indicates consent to monitoring and recording; Retain the notification message or banner on the screen until users acknowledge the usage conditions and take explicit actions to log on to or further access the system; and For publicly accessible systems: Display system use information conditions , before granting further access to the publicly accessible system; Display references, if any, to monitoring, recording, or auditing that are consistent with privacy accommodations for such systems that generally prohibit those activities; and Include a description of the authorized uses of the system.",
+    "implementation": "System use notifications can be implemented using messages or warning banners displayed before individuals log in to systems. System use notifications are used only for access via logon interfaces with human users. Notifications are not required when human interfaces do not exist. Based on an assessment of risk, organizations consider whether or not a secondary system use notification is needed to access applications or other system resources after the initial network logon. Organizations consider system use notification messages or banners displayed in multiple languages based on organizational needs and the demographics of system users. Organizations consult with the privacy office for input regarding privacy messaging and the Office of the General Counsel or organizational equivalent for legal review and approval of warning banner content.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-08"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-09",
+    "category": "Access Control",
+    "name": "Previous Logon Notification",
+    "description": "Notify the user, upon successful logon to the system, of the date and time of the last logon.",
+    "implementation": "Previous logon notification is applicable to system access via human user interfaces and access to systems that occurs in other types of architectures. Information about the last successful logon allows the user to recognize if the date and time provided is not consistent with the user’s last access.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-09"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-10",
+    "category": "Access Control",
+    "name": "Concurrent Session Control",
+    "description": "Limit the number of concurrent sessions for each account and/or account types to number.",
+    "implementation": "Organizations may define the maximum number of concurrent sessions for system accounts globally, by account type, by account, or any combination thereof. For example, organizations may limit the number of concurrent sessions for system administrators or other individuals working in particularly sensitive domains or mission-critical applications. Concurrent session control addresses concurrent sessions for system accounts. It does not, however, address concurrent sessions by single users via multiple system accounts.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-10"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-11",
+    "category": "Access Control",
+    "name": "Device Lock",
+    "description": "Prevent further access to the system by [one or more of: initiating a device lock after time period of inactivity; requiring the user to initiate a device lock before leaving the system unattended] ; and Retain the device lock until the user reestablishes access using established identification and authentication procedures.",
+    "implementation": "Device locks are temporary actions taken to prevent logical access to organizational systems when users stop work and move away from the immediate vicinity of those systems but do not want to log out because of the temporary nature of their absences. Device locks can be implemented at the operating system level or at the application level. A proximity lock may be used to initiate the device lock (e.g., via a Bluetooth-enabled device or dongle). User-initiated device locking is behavior or policy-based and, as such, requires users to take physical action to initiate the device lock. Device locks are not an acceptable substitute for logging out of systems, such as when organizations require users to log out at the end of workdays.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-11"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-12",
+    "category": "Access Control",
+    "name": "Session Termination",
+    "description": "Automatically terminate a user session after conditions or trigger events.",
+    "implementation": "Session termination addresses the termination of user-initiated logical sessions (in contrast to [SC-10](#sc-10) , which addresses the termination of network connections associated with communications sessions (i.e., network disconnect)). A logical session (for local, network, and remote access) is initiated whenever a user (or process acting on behalf of a user) accesses an organizational system. Such user sessions can be terminated without terminating network sessions. Session termination ends all processes associated with a user’s logical session except for those processes that are specifically created by the user (i.e., session owner) to continue after the session is terminated. Conditions or trigger events that require automatic termination of the session include organization-defined periods of user inactivity, targeted responses to certain types of incidents, or time-of-day restrictions on system use.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-12"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-14",
+    "category": "Access Control",
+    "name": "Permitted Actions Without Identification or Authentication",
+    "description": "Identify user actions that can be performed on the system without identification or authentication consistent with organizational mission and business functions; and Document and provide supporting rationale in the security plan for the system, user actions not requiring identification or authentication.",
+    "implementation": "Specific user actions may be permitted without identification or authentication if organizations determine that identification and authentication are not required for the specified user actions. Organizations may allow a limited number of user actions without identification or authentication, including when individuals access public websites or other publicly accessible federal systems, when individuals use mobile phones to receive calls, or when facsimiles are received. Organizations identify actions that normally require identification or authentication but may, under certain circumstances, allow identification or authentication mechanisms to be bypassed. Such bypasses may occur, for example, via a software-readable physical switch that commands bypass of the logon functionality and is protected from accidental or unmonitored use. Permitting actions without identification or authentication does not apply to situations where identification and authentication have already occurred and are not repeated but rather to situations where identification and authentication have not yet occurred. Organizations may decide that there are no user actions that can be performed on organizational systems without identification and authentication, and therefore, the value for the assignment operation can be \"none.\"",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-14"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-16",
+    "category": "Access Control",
+    "name": "Security and Privacy Attributes",
+    "description": "Provide the means to associate organization-defined types of security and privacy attributes with organization-defined security and privacy attribute values for information in storage, in process, and/or in transmission; Ensure that the attribute associations are made and retained with the information; Establish the following permitted security and privacy attributes from the attributes defined in [AC-16a](#ac-16_smt.a) for organization-defined systems: organization-defined security and privacy attributes; Determine the following permitted attribute values or ranges for each of the established attributes: attribute values or ranges; Audit changes to attributes; and Review organization-defined security and privacy attributes for applicability organization-defined frequency.",
+    "implementation": "Information is represented internally within systems using abstractions known as data structures. Internal data structures can represent different types of entities, both active and passive. Active entities, also known as subjects, are typically associated with individuals, devices, or processes acting on behalf of individuals. Passive entities, also known as objects, are typically associated with data structures, such as records, buffers, tables, files, inter-process pipes, and communications ports. Security attributes, a form of metadata, are abstractions that represent the basic properties or characteristics of active and passive entities with respect to safeguarding information. Privacy attributes, which may be used independently or in conjunction with security attributes, represent the basic properties or characteristics of active or passive entities with respect to the management of personally identifiable information. Attributes can be either explicitly or implicitly associated with the information contained in organizational systems or system components. Attributes may be associated with active entities (i.e., subjects) that have the potential to send or receive information, cause information to flow among objects, or change the system state. These attributes may also be associated with passive entities (i.e., objects) that contain or receive information. The association of attributes to subjects and objects by a system is referred to as binding and is inclusive of setting the attribute value and the attribute type. Attributes, when bound to data or information, permit the enforcement of security and privacy policies for access control and information flow control, including data retention limits, permitted uses of personally identifiable information, and identification of personal information within data objects. Such enforcement occurs through organizational processes or system functions or mechanisms. The binding techniques implemented by systems affect the strength of attribute binding to information. Binding strength and the assurance associated with binding techniques play important parts in the trust that organizations have in the information flow enforcement process. The binding techniques affect the number and degree of additional reviews required by organizations. The content or assigned values of attributes can directly affect the ability of individuals to access organizational information. Organizations can define the types of attributes needed for systems to support missions or business functions. There are many values that can be assigned to a security attribute. By specifying the permitted attribute ranges and values, organizations ensure that attribute values are meaningful and relevant. Labeling refers to the association of attributes with the subjects and objects represented by the internal data structures within systems. This facilitates system-based enforcement of information security and privacy policies. Labels include classification of information in accordance with legal and compliance requirements (e.g., top secret, secret, confidential, controlled unclassified), information impact level; high value asset information, access authorizations, nationality; data life cycle protection (i.e., encryption and data expiration), personally identifiable information processing permissions, including individual consent to personally identifiable information processing, and contractor affiliation. A related term to labeling is marking. Marking refers to the association of attributes with objects in a human-readable form and displayed on system media. Marking enables manual, procedural, or process-based enforcement of information security and privacy policies. Security and privacy labels may have the same value as media markings (e.g., top secret, secret, confidential). See [MP-3](#mp-3) (Media Marking).",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-16"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-17",
+    "category": "Access Control",
+    "name": "Remote Access",
+    "description": "Establish and document usage restrictions, configuration/connection requirements, and implementation guidance for each type of remote access allowed; and Authorize each type of remote access to the system prior to allowing such connections.",
+    "implementation": "Remote access is access to organizational systems (or processes acting on behalf of users) that communicate through external networks such as the Internet. Types of remote access include dial-up, broadband, and wireless. Organizations use encrypted virtual private networks (VPNs) to enhance confidentiality and integrity for remote connections. The use of encrypted VPNs provides sufficient assurance to the organization that it can effectively treat such connections as internal networks if the cryptographic mechanisms used are implemented in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines. Still, VPN connections traverse external networks, and the encrypted VPN does not enhance the availability of remote connections. VPNs with encrypted tunnels can also affect the ability to adequately monitor network communications traffic for malicious code. Remote access controls apply to systems other than public web servers or systems designed for public access. Authorization of each remote access type addresses authorization prior to allowing remote access without specifying the specific formats for such authorization. While organizations may use information exchange and system connection security agreements to manage remote access connections to other systems, such agreements are addressed as part of [CA-3](#ca-3) . Enforcing access restrictions for remote access is addressed via [AC-3](#ac-3).",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-17"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-18",
+    "category": "Access Control",
+    "name": "Wireless Access",
+    "description": "Establish configuration requirements, connection requirements, and implementation guidance for each type of wireless access; and Authorize each type of wireless access to the system prior to allowing such connections.",
+    "implementation": "Wireless technologies include microwave, packet radio (ultra-high frequency or very high frequency), 802.11x, and Bluetooth. Wireless networks use authentication protocols that provide authenticator protection and mutual authentication.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-18"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-19",
+    "category": "Access Control",
+    "name": "Access Control for Mobile Devices",
+    "description": "Establish configuration requirements, connection requirements, and implementation guidance for organization-controlled mobile devices, to include when such devices are outside of controlled areas; and Authorize the connection of mobile devices to organizational systems.",
+    "implementation": "A mobile device is a computing device that has a small form factor such that it can easily be carried by a single individual; is designed to operate without a physical connection; possesses local, non-removable or removable data storage; and includes a self-contained power source. Mobile device functionality may also include voice communication capabilities, on-board sensors that allow the device to capture information, and/or built-in features for synchronizing local data with remote locations. Examples include smart phones and tablets. Mobile devices are typically associated with a single individual. The processing, storage, and transmission capability of the mobile device may be comparable to or merely a subset of notebook/desktop systems, depending on the nature and intended purpose of the device. Protection and control of mobile devices is behavior or policy-based and requires users to take physical action to protect and control such devices when outside of controlled areas. Controlled areas are spaces for which organizations provide physical or procedural controls to meet the requirements established for protecting information and systems. Due to the large variety of mobile devices with different characteristics and capabilities, organizational restrictions may vary for the different classes or types of such devices. Usage restrictions and specific implementation guidance for mobile devices include configuration management, device identification and authentication, implementation of mandatory protective software, scanning devices for malicious code, updating virus protection software, scanning for critical software updates and patches, conducting primary operating system (and possibly other resident software) integrity checks, and disabling unnecessary hardware. Usage restrictions and authorization to connect may vary among organizational systems. For example, the organization may authorize the connection of mobile devices to its network and impose a set of usage restrictions, while a system owner may withhold authorization for mobile device connection to specific applications or impose additional usage restrictions before allowing mobile device connections to a system. Adequate security for mobile devices goes beyond the requirements specified in [AC-19](#ac-19) . Many safeguards for mobile devices are reflected in other controls. [AC-20](#ac-20) addresses mobile devices that are not organization-controlled.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-19"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-20",
+    "category": "Access Control",
+    "name": "Use of External Systems",
+    "description": "[one or more of: establish terms and conditions; identify controls asserted] , consistent with the trust relationships established with other organizations owning, operating, and/or maintaining external systems, allowing authorized individuals to: Access the system from external systems; and Process, store, or transmit organization-controlled information using external systems; or Prohibit the use of prohibited types of external systems.",
+    "implementation": "External systems are systems that are used by but not part of organizational systems, and for which the organization has no direct control over the implementation of required controls or the assessment of control effectiveness. External systems include personally owned systems, components, or devices; privately owned computing and communications devices in commercial or public facilities; systems owned or controlled by nonfederal organizations; systems managed by contractors; and federal information systems that are not owned by, operated by, or under the direct supervision or authority of the organization. External systems also include systems owned or operated by other components within the same organization and systems within the organization with different authorization boundaries. Organizations have the option to prohibit the use of any type of external system or prohibit the use of specified types of external systems, (e.g., prohibit the use of any external system that is not organizationally owned or prohibit the use of personally-owned systems). For some external systems (i.e., systems operated by other organizations), the trust relationships that have been established between those organizations and the originating organization may be such that no explicit terms and conditions are required. Systems within these organizations may not be considered external. These situations occur when, for example, there are pre-existing information exchange agreements (either implicit or explicit) established between organizations or components or when such agreements are specified by applicable laws, executive orders, directives, regulations, policies, or standards. Authorized individuals include organizational personnel, contractors, or other individuals with authorized access to organizational systems and over which organizations have the authority to impose specific rules of behavior regarding system access. Restrictions that organizations impose on authorized individuals need not be uniform, as the restrictions may vary depending on trust relationships between organizations. Therefore, organizations may choose to impose different security restrictions on contractors than on state, local, or tribal governments. External systems used to access public interfaces to organizational systems are outside the scope of [AC-20](#ac-20) . Organizations establish specific terms and conditions for the use of external systems in accordance with organizational security policies and procedures. At a minimum, terms and conditions address the specific types of applications that can be accessed on organizational systems from external systems and the highest security category of information that can be processed, stored, or transmitted on external systems. If the terms and conditions with the owners of the external systems cannot be established, organizations may impose restrictions on organizational personnel using those external systems.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-20"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-21",
+    "category": "Access Control",
+    "name": "Information Sharing",
+    "description": "Enable authorized users to determine whether access authorizations assigned to a sharing partner match the information’s access and use restrictions for information-sharing circumstances ; and Employ automated mechanisms to assist users in making information sharing and collaboration decisions.",
+    "implementation": "Information sharing applies to information that may be restricted in some manner based on some formal or administrative determination. Examples of such information include, contract-sensitive information, classified information related to special access programs or compartments, privileged information, proprietary information, and personally identifiable information. Security and privacy risk assessments as well as applicable laws, regulations, and policies can provide useful inputs to these determinations. Depending on the circumstances, sharing partners may be defined at the individual, group, or organizational level. Information may be defined by content, type, security category, or special access program or compartment. Access restrictions may include non-disclosure agreements (NDA). Information flow techniques and security attributes may be used to provide automated assistance to users making sharing and collaboration decisions.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-21"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-22",
+    "category": "Access Control",
+    "name": "Publicly Accessible Content",
+    "description": "Designate individuals authorized to make information publicly accessible; Train authorized individuals to ensure that publicly accessible information does not contain nonpublic information; Review the proposed content of information prior to posting onto the publicly accessible system to ensure that nonpublic information is not included; and Review the content on the publicly accessible system for nonpublic information frequency and remove such information, if discovered.",
+    "implementation": "In accordance with applicable laws, executive orders, directives, policies, regulations, standards, and guidelines, the public is not authorized to have access to nonpublic information, including information protected under the [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455) and proprietary information. Publicly accessible content addresses systems that are controlled by the organization and accessible to the public, typically without identification or authentication. Posting information on non-organizational systems (e.g., non-organizational public websites, forums, and social media) is covered by organizational policy. While organizations may have individuals who are responsible for developing and implementing policies about the information that can be made publicly accessible, publicly accessible content addresses the management of the individuals who make such information publicly accessible.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-22"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-23",
+    "category": "Access Control",
+    "name": "Data Mining Protection",
+    "description": "Employ techniques for data storage objects to detect and protect against unauthorized data mining.",
+    "implementation": "Data mining is an analytical process that attempts to find correlations or patterns in large data sets for the purpose of data or knowledge discovery. Data storage objects include database records and database fields. Sensitive information can be extracted from data mining operations. When information is personally identifiable information, it may lead to unanticipated revelations about individuals and give rise to privacy risks. Prior to performing data mining activities, organizations determine whether such activities are authorized. Organizations may be subject to applicable laws, executive orders, directives, regulations, or policies that address data mining requirements. Organizational personnel consult with the senior agency official for privacy and legal counsel regarding such requirements. Data mining prevention and detection techniques include limiting the number and frequency of database queries to increase the work factor needed to determine the contents of databases, limiting types of responses provided to database queries, applying differential privacy techniques or homomorphic encryption, and notifying personnel when atypical database queries or accesses occur. Data mining protection focuses on protecting information from data mining while such information resides in organizational data stores. In contrast, [AU-13](#au-13) focuses on monitoring for organizational information that may have been mined or otherwise obtained from data stores and is available as open-source information residing on external sites, such as social networking or social media websites. [EO 13587](#0af071a6-cf8e-48ee-8c82-fe91efa20f94) requires the establishment of an insider threat program for deterring, detecting, and mitigating insider threats, including the safeguarding of sensitive information from exploitation, compromise, or other unauthorized disclosure. Data mining protection requires organizations to identify appropriate techniques to prevent and detect unnecessary or unauthorized data mining. Data mining can be used by an insider to collect organizational information for the purpose of exfiltration.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-23"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-24",
+    "category": "Access Control",
+    "name": "Access Control Decisions",
+    "description": "[one or more of: establish procedures; implement mechanisms] to ensure access control decisions are applied to each access request prior to access enforcement.",
+    "implementation": "Access control decisions (also known as authorization decisions) occur when authorization information is applied to specific accesses. In contrast, access enforcement occurs when systems enforce access control decisions. While it is common to have access control decisions and access enforcement implemented by the same entity, it is not required, and it is not always an optimal implementation choice. For some architectures and distributed systems, different entities may make access control decisions and enforce access.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-24"
+    ],
+    "stride": []
+  },
+  {
+    "id": "AC-25",
+    "category": "Access Control",
+    "name": "Reference Monitor",
+    "description": "Implement a reference monitor for access control policies that is tamperproof, always invoked, and small enough to be subject to analysis and testing, the completeness of which can be assured.",
+    "implementation": "A reference monitor is a set of design requirements on a reference validation mechanism that, as a key component of an operating system, enforces an access control policy over all subjects and objects. A reference validation mechanism is always invoked, tamper-proof, and small enough to be subject to analysis and tests, the completeness of which can be assured (i.e., verifiable). Information is represented internally within systems using abstractions known as data structures. Internal data structures can represent different types of entities, both active and passive. Active entities, also known as subjects, are associated with individuals, devices, or processes acting on behalf of individuals. Passive entities, also known as objects, are associated with data structures, such as records, buffers, communications ports, tables, files, and inter-process pipes. Reference monitors enforce access control policies that restrict access to objects based on the identity of subjects or groups to which the subjects belong. The system enforces the access control policy based on the rule set established by the policy. The tamper-proof property of the reference monitor prevents determined adversaries from compromising the functioning of the reference validation mechanism. The always invoked property prevents adversaries from bypassing the mechanism and violating the security policy. The smallness property helps to ensure completeness in the analysis and testing of the mechanism to detect any weaknesses or deficiencies (i.e., latent flaws) that would prevent the enforcement of the security policy.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, AC-25"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-01",
+    "category": "Identification and Authentication",
+    "name": "Policy and Procedures",
+    "description": "Develop, document, and disseminate to organization-defined personnel or roles: [one or more of: organization-level; mission/business process-level; system-level] identification and authentication policy that: Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and Procedures to facilitate the implementation of the identification and authentication policy and the associated identification and authentication controls; Designate an official to manage the development, documentation, and dissemination of the identification and authentication policy and procedures; and Review and update the current identification and authentication: Policy frequency and following events ; and Procedures frequency and following events.",
+    "implementation": "Identification and authentication policy and procedures address the controls in the IA family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of identification and authentication policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies that reflect the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to identification and authentication policy and procedures include assessment or audit findings, security incidents or breaches, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-01"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-02",
+    "category": "Identification and Authentication",
+    "name": "Identification and Authentication (Organizational Users)",
+    "description": "Uniquely identify and authenticate organizational users and associate that unique identification with processes acting on behalf of those users.",
+    "implementation": "Organizations can satisfy the identification and authentication requirements by complying with the requirements in [HSPD 12](#f16e438e-7114-4144-bfe2-2dfcad8cb2d0) . Organizational users include employees or individuals who organizations consider to have an equivalent status to employees (e.g., contractors and guest researchers). Unique identification and authentication of users applies to all accesses other than those that are explicitly identified in [AC-14](#ac-14) and that occur through the authorized use of group authenticators without individual authentication. Since processes execute on behalf of groups and roles, organizations may require unique identification of individuals in group accounts or for detailed accountability of individual activity. Organizations employ passwords, physical authenticators, or biometrics to authenticate user identities or, in the case of multi-factor authentication, some combination thereof. Access to organizational systems is defined as either local access or network access. Local access is any access to organizational systems by users or processes acting on behalf of users, where access is obtained through direct connections without the use of networks. Network access is access to organizational systems by users (or processes acting on behalf of users) where access is obtained through network connections (i.e., nonlocal accesses). Remote access is a type of network access that involves communication through external networks. Internal networks include local area networks and wide area networks. The use of encrypted virtual private networks for network connections between organization-controlled endpoints and non-organization-controlled endpoints may be treated as internal networks with respect to protecting the confidentiality and integrity of information traversing the network. Identification and authentication requirements for non-organizational users are described in [IA-8](#ia-8).",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-02"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-03",
+    "category": "Identification and Authentication",
+    "name": "Device Identification and Authentication",
+    "description": "Uniquely identify and authenticate devices and/or types of devices before establishing a [one or more of: local; remote; network] connection.",
+    "implementation": "Devices that require unique device-to-device identification and authentication are defined by type, device, or a combination of type and device. Organization-defined device types include devices that are not owned by the organization. Systems use shared known information (e.g., Media Access Control [MAC], Transmission Control Protocol/Internet Protocol [TCP/IP] addresses) for device identification or organizational authentication solutions (e.g., Institute of Electrical and Electronics Engineers (IEEE) 802.1x and Extensible Authentication Protocol [EAP], RADIUS server with EAP-Transport Layer Security [TLS] authentication, Kerberos) to identify and authenticate devices on local and wide area networks. Organizations determine the required strength of authentication mechanisms based on the security categories of systems and mission or business requirements. Because of the challenges of implementing device authentication on a large scale, organizations can restrict the application of the control to a limited number/type of devices based on mission or business needs.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-03"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-04",
+    "category": "Identification and Authentication",
+    "name": "Identifier Management",
+    "description": "Manage system identifiers by: Receiving authorization from personnel or roles to assign an individual, group, role, service, or device identifier; Selecting an identifier that identifies an individual, group, role, service, or device; Assigning the identifier to the intended individual, group, role, service, or device; and Preventing reuse of identifiers for time period.",
+    "implementation": "Common device identifiers include Media Access Control (MAC) addresses, Internet Protocol (IP) addresses, or device-unique token identifiers. The management of individual identifiers is not applicable to shared system accounts. Typically, individual identifiers are the usernames of the system accounts assigned to those individuals. In such instances, the account management activities of [AC-2](#ac-2) use account names provided by [IA-4](#ia-4) . Identifier management also addresses individual identifiers not necessarily associated with system accounts. Preventing the reuse of identifiers implies preventing the assignment of previously used individual, group, role, service, or device identifiers to different individuals, groups, roles, services, or devices.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-04"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-05",
+    "category": "Identification and Authentication",
+    "name": "Authenticator Management",
+    "description": "Manage system authenticators by: Verifying, as part of the initial authenticator distribution, the identity of the individual, group, role, service, or device receiving the authenticator; Establishing initial authenticator content for any authenticators issued by the organization; Ensuring that authenticators have sufficient strength of mechanism for their intended use; Establishing and implementing administrative procedures for initial authenticator distribution, for lost or compromised or damaged authenticators, and for revoking authenticators; Changing default authenticators prior to first use; Changing or refreshing authenticators time period by authenticator type or when events occur; Protecting authenticator content from unauthorized disclosure and modification; Requiring individuals to take, and having devices implement, specific controls to protect authenticators; and Changing authenticators for group or role accounts when membership to those accounts changes.",
+    "implementation": "Authenticators include passwords, cryptographic devices, biometrics, certificates, one-time password devices, and ID badges. Device authenticators include certificates and passwords. Initial authenticator content is the actual content of the authenticator (e.g., the initial password). In contrast, the requirements for authenticator content contain specific criteria or characteristics (e.g., minimum password length). Developers may deliver system components with factory default authentication credentials (i.e., passwords) to allow for initial installation and configuration. Default authentication credentials are often well known, easily discoverable, and present a significant risk. The requirement to protect individual authenticators may be implemented via control [PL-4](#pl-4) or [PS-6](#ps-6) for authenticators in the possession of individuals and by controls [AC-3](#ac-3), [AC-6](#ac-6) , and [SC-28](#sc-28) for authenticators stored in organizational systems, including passwords stored in hashed or encrypted formats or files containing encrypted or hashed passwords accessible with administrator privileges. Systems support authenticator management by organization-defined settings and restrictions for various authenticator characteristics (e.g., minimum password length, validation time window for time synchronous one-time tokens, and number of allowed rejections during the verification stage of biometric authentication). Actions can be taken to safeguard individual authenticators, including maintaining possession of authenticators, not sharing authenticators with others, and immediately reporting lost, stolen, or compromised authenticators. Authenticator management includes issuing and revoking authenticators for temporary access when no longer needed.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-05"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-06",
+    "category": "Identification and Authentication",
+    "name": "Authentication Feedback",
+    "description": "Obscure feedback of authentication information during the authentication process to protect the information from possible exploitation and use by unauthorized individuals.",
+    "implementation": "Authentication feedback from systems does not provide information that would allow unauthorized individuals to compromise authentication mechanisms. For some types of systems, such as desktops or notebooks with relatively large monitors, the threat (referred to as shoulder surfing) may be significant. For other types of systems, such as mobile devices with small displays, the threat may be less significant and is balanced against the increased likelihood of typographic input errors due to small keyboards. Thus, the means for obscuring authentication feedback is selected accordingly. Obscuring authentication feedback includes displaying asterisks when users type passwords into input devices or displaying feedback for a very limited time before obscuring it.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-06"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-07",
+    "category": "Identification and Authentication",
+    "name": "Cryptographic Module Authentication",
+    "description": "Implement mechanisms for authentication to a cryptographic module that meet the requirements of applicable laws, executive orders, directives, policies, regulations, standards, and guidelines for such authentication.",
+    "implementation": "Authentication mechanisms may be required within a cryptographic module to authenticate an operator accessing the module and to verify that the operator is authorized to assume the requested role and perform services within that role.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-07"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-08",
+    "category": "Identification and Authentication",
+    "name": "Identification and Authentication (Non-organizational Users)",
+    "description": "Uniquely identify and authenticate non-organizational users or processes acting on behalf of non-organizational users.",
+    "implementation": "Non-organizational users include system users other than organizational users explicitly covered by [IA-2](#ia-2) . Non-organizational users are uniquely identified and authenticated for accesses other than those explicitly identified and documented in [AC-14](#ac-14) . Identification and authentication of non-organizational users accessing federal systems may be required to protect federal, proprietary, or privacy-related information (with exceptions noted for national security systems). Organizations consider many factors—including security, privacy, scalability, and practicality—when balancing the need to ensure ease of use for access to federal information and systems with the need to protect and adequately mitigate risk.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-08"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-09",
+    "category": "Identification and Authentication",
+    "name": "Service Identification and Authentication",
+    "description": "Uniquely identify and authenticate system services and applications before establishing communications with devices, users, or other services or applications.",
+    "implementation": "Services that may require identification and authentication include web applications using digital certificates or services or applications that query a database. Identification and authentication methods for system services and applications include information or code signing, provenance graphs, and electronic signatures that indicate the sources of services. Decisions regarding the validity of identification and authentication claims can be made by services separate from the services acting on those decisions. This can occur in distributed system architectures. In such situations, the identification and authentication decisions (instead of actual identifiers and authentication data) are provided to the services that need to act on those decisions.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-09"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-10",
+    "category": "Identification and Authentication",
+    "name": "Adaptive Authentication",
+    "description": "Require individuals accessing the system to employ supplemental authentication techniques or mechanisms under specific circumstances or situations.",
+    "implementation": "Adversaries may compromise individual authentication mechanisms employed by organizations and subsequently attempt to impersonate legitimate users. To address this threat, organizations may employ specific techniques or mechanisms and establish protocols to assess suspicious behavior. Suspicious behavior may include accessing information that individuals do not typically access as part of their duties, roles, or responsibilities; accessing greater quantities of information than individuals would routinely access; or attempting to access information from suspicious network addresses. When pre-established conditions or triggers occur, organizations can require individuals to provide additional authentication information. Another potential use for adaptive authentication is to increase the strength of mechanism based on the number or types of records being accessed. Adaptive authentication does not replace and is not used to avoid the use of multi-factor authentication mechanisms but can augment implementations of multi-factor authentication.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-10"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-11",
+    "category": "Identification and Authentication",
+    "name": "Re-authentication",
+    "description": "Require users to re-authenticate when circumstances or situations.",
+    "implementation": "In addition to the re-authentication requirements associated with device locks, organizations may require re-authentication of individuals in certain situations, including when roles, authenticators or credentials change, when security categories of systems change, when the execution of privileged functions occurs, after a fixed time period, or periodically.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-11"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-12",
+    "category": "Identification and Authentication",
+    "name": "Identity Proofing",
+    "description": "Identity proof users that require accounts for logical access to systems based on appropriate identity assurance level requirements as specified in applicable standards and guidelines; Resolve user identities to a unique individual; and Collect, validate, and verify identity evidence.",
+    "implementation": "Identity proofing is the process of collecting, validating, and verifying a user’s identity information for the purposes of establishing credentials for accessing a system. Identity proofing is intended to mitigate threats to the registration of users and the establishment of their accounts. Standards and guidelines specifying identity assurance levels for identity proofing include [SP 800-63-3](#737513fa-6758-403f-831d-5ddab5e23cb3) and [SP 800-63A](#9099ed2c-922a-493d-bcb4-d896192243ff) . Organizations may be subject to laws, executive orders, directives, regulations, or policies that address the collection of identity evidence. Organizational personnel consult with the senior agency official for privacy and legal counsel regarding such requirements.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-12"
+    ],
+    "stride": []
+  },
+  {
+    "id": "IA-13",
+    "category": "Identification and Authentication",
+    "name": "Identity Providers and Authorization Servers",
+    "description": "Employ identity providers and authorization servers to manage user, device, and non-person entity (NPE) identities, attributes, and access rights supporting authentication and authorization decisions in accordance with policy using mechanisms.",
+    "implementation": "Identity providers, both internal and external to the organization, manage the user, device, and NPE authenticators and issue statements, often called identity assertions, attesting to identities of other systems or systems components. Authorization servers create and issue access tokens to identified and authenticated users and devices that can be used to gain access to system or information resources. For example, single sign-on (SSO) provides identity provider and authorization server functions. Authenticator management (to include credential management) is covered by IA-05.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, IA-13"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-01",
+    "category": "System and Communications Protection",
+    "name": "Policy and Procedures",
+    "description": "Develop, document, and disseminate to organization-defined personnel or roles: [one or more of: organization-level; mission/business-process-level; system-level] system and communications protection policy that: Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and Procedures to facilitate the implementation of the system and communications protection policy and the associated system and communications protection controls; Designate an official to manage the development, documentation, and dissemination of the system and communications protection policy and procedures; and Review and update the current system and communications protection: Policy frequency and following events ; and Procedures frequency and following events.",
+    "implementation": "System and communications protection policy and procedures address the controls in the SC family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of system and communications protection policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies that reflect the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to system and communications protection policy and procedures include assessment or audit findings, security incidents or breaches, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-01"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-02",
+    "category": "System and Communications Protection",
+    "name": "Separation of System and User Functionality",
+    "description": "Separate user functionality, including user interface services, from system management functionality.",
+    "implementation": "System management functionality includes functions that are necessary to administer databases, network components, workstations, or servers. These functions typically require privileged user access. The separation of user functions from system management functions is physical or logical. Organizations may separate system management functions from user functions by using different computers, instances of operating systems, central processing units, or network addresses; by employing virtualization techniques; or some combination of these or other methods. Separation of system management functions from user functions includes web administrative interfaces that employ separate authentication methods for users of any other system resources. Separation of system and user functions may include isolating administrative interfaces on different domains and with additional access controls. The separation of system and user functionality can be achieved by applying the systems security engineering design principles in [SA-8](#sa-8) , including [SA-8(1)](#sa-8.1), [SA-8(3)](#sa-8.3), [SA-8(4)](#sa-8.4), [SA-8(10)](#sa-8.10), [SA-8(12)](#sa-8.12), [SA-8(13)](#sa-8.13), [SA-8(14)](#sa-8.14) , and [SA-8(18)](#sa-8.18).",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-02"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-03",
+    "category": "System and Communications Protection",
+    "name": "Security Function Isolation",
+    "description": "Isolate security functions from nonsecurity functions.",
+    "implementation": "Security functions are isolated from nonsecurity functions by means of an isolation boundary implemented within a system via partitions and domains. The isolation boundary controls access to and protects the integrity of the hardware, software, and firmware that perform system security functions. Systems implement code separation in many ways, such as through the provision of security kernels via processor rings or processor modes. For non-kernel code, security function isolation is often achieved through file system protections that protect the code on disk and address space protections that protect executing code. Systems can restrict access to security functions using access control mechanisms and by implementing least privilege capabilities. While the ideal is for all code within the defined security function isolation boundary to only contain security-relevant code, it is sometimes necessary to include nonsecurity functions as an exception. The isolation of security functions from nonsecurity functions can be achieved by applying the systems security engineering design principles in [SA-8](#sa-8) , including [SA-8(1)](#sa-8.1), [SA-8(3)](#sa-8.3), [SA-8(4)](#sa-8.4), [SA-8(10)](#sa-8.10), [SA-8(12)](#sa-8.12), [SA-8(13)](#sa-8.13), [SA-8(14)](#sa-8.14) , and [SA-8(18)](#sa-8.18).",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-03"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-04",
+    "category": "System and Communications Protection",
+    "name": "Information in Shared System Resources",
+    "description": "Prevent unauthorized and unintended information transfer via shared system resources.",
+    "implementation": "Preventing unauthorized and unintended information transfer via shared system resources stops information produced by the actions of prior users or roles (or the actions of processes acting on behalf of prior users or roles) from being available to current users or roles (or current processes acting on behalf of current users or roles) that obtain access to shared system resources after those resources have been released back to the system. Information in shared system resources also applies to encrypted representations of information. In other contexts, control of information in shared system resources is referred to as object reuse and residual information protection. Information in shared system resources does not address information remanence, which refers to the residual representation of data that has been nominally deleted; covert channels (including storage and timing channels), where shared system resources are manipulated to violate information flow restrictions; or components within systems for which there are only single users or roles.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-04"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-05",
+    "category": "System and Communications Protection",
+    "name": "Denial-of-service Protection",
+    "description": "[one of: protect against; limit] the effects of the following types of denial-of-service events: types of denial-of-service events ; and Employ the following controls to achieve the denial-of-service objective: controls by type of denial-of-service event.",
+    "implementation": "Denial-of-service events may occur due to a variety of internal and external causes, such as an attack by an adversary or a lack of planning to support organizational needs with respect to capacity and bandwidth. Such attacks can occur across a wide range of network protocols (e.g., IPv4, IPv6). A variety of technologies are available to limit or eliminate the origination and effects of denial-of-service events. For example, boundary protection devices can filter certain types of packets to protect system components on internal networks from being directly affected by or the source of denial-of-service attacks. Employing increased network capacity and bandwidth combined with service redundancy also reduces the susceptibility to denial-of-service events.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-05"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-06",
+    "category": "System and Communications Protection",
+    "name": "Resource Availability",
+    "description": "Protect the availability of resources by allocating resources by [one or more of: priority; quota; controls].",
+    "implementation": "Priority protection prevents lower-priority processes from delaying or interfering with the system that services higher-priority processes. Quotas prevent users or processes from obtaining more than predetermined amounts of resources.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-06"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-07",
+    "category": "System and Communications Protection",
+    "name": "Boundary Protection",
+    "description": "Monitor and control communications at the external managed interfaces to the system and at key internal managed interfaces within the system; Implement subnetworks for publicly accessible system components that are [one of: physically; logically] separated from internal organizational networks; and Connect to external networks or systems only through managed interfaces consisting of boundary protection devices arranged in accordance with an organizational security and privacy architecture.",
+    "implementation": "Managed interfaces include gateways, routers, firewalls, guards, network-based malicious code analysis, virtualization systems, or encrypted tunnels implemented within a security architecture. Subnetworks that are physically or logically separated from internal networks are referred to as demilitarized zones or DMZs. Restricting or prohibiting interfaces within organizational systems includes restricting external web traffic to designated web servers within managed interfaces, prohibiting external traffic that appears to be spoofing internal addresses, and prohibiting internal traffic that appears to be spoofing external addresses. [SP 800-189](#f5edfe51-d1f2-422e-9b27-5d0e90b49c72) provides additional information on source address validation techniques to prevent ingress and egress of traffic with spoofed addresses. Commercial telecommunications services are provided by network components and consolidated management systems shared by customers. These services may also include third party-provided access lines and other service elements. Such services may represent sources of increased risk despite contract security provisions. Boundary protection may be implemented as a common control for all or part of an organizational network such that the boundary to be protected is greater than a system-specific boundary (i.e., an authorization boundary).",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-07"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-08",
+    "category": "System and Communications Protection",
+    "name": "Transmission Confidentiality and Integrity",
+    "description": "Protect the [one or more of: confidentiality; integrity] of transmitted information.",
+    "implementation": "Protecting the confidentiality and integrity of transmitted information applies to internal and external networks as well as any system components that can transmit information, including servers, notebook computers, desktop computers, mobile devices, printers, copiers, scanners, facsimile machines, and radios. Unprotected communication paths are exposed to the possibility of interception and modification. Protecting the confidentiality and integrity of information can be accomplished by physical or logical means. Physical protection can be achieved by using protected distribution systems. A protected distribution system is a wireline or fiber-optics telecommunications system that includes terminals and adequate electromagnetic, acoustical, electrical, and physical controls to permit its use for the unencrypted transmission of classified information. Logical protection can be achieved by employing encryption techniques. Organizations that rely on commercial providers who offer transmission services as commodity services rather than as fully dedicated services may find it difficult to obtain the necessary assurances regarding the implementation of needed controls for transmission confidentiality and integrity. In such situations, organizations determine what types of confidentiality or integrity services are available in standard, commercial telecommunications service packages. If it is not feasible to obtain the necessary controls and assurances of control effectiveness through appropriate contracting vehicles, organizations can implement appropriate compensating controls.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-08"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-10",
+    "category": "System and Communications Protection",
+    "name": "Network Disconnect",
+    "description": "Terminate the network connection associated with a communications session at the end of the session or after time period of inactivity.",
+    "implementation": "Network disconnect applies to internal and external networks. Terminating network connections associated with specific communications sessions includes de-allocating TCP/IP address or port pairs at the operating system level and de-allocating the networking assignments at the application level if multiple application sessions are using a single operating system-level network connection. Periods of inactivity may be established by organizations and include time periods by type of network access or for specific network accesses.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-10"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-11",
+    "category": "System and Communications Protection",
+    "name": "Trusted Path",
+    "description": "Provide a [one of: physically; logically] isolated trusted communications path for communications between the user and the trusted components of the system; and Permit users to invoke the trusted communications path for communications between the user and the following security functions of the system, including at a minimum, authentication and re-authentication: security functions.",
+    "implementation": "Trusted paths are mechanisms by which users can communicate (using input devices such as keyboards) directly with the security functions of systems with the requisite assurance to support security policies. Trusted path mechanisms can only be activated by users or the security functions of organizational systems. User responses that occur via trusted paths are protected from modification by and disclosure to untrusted applications. Organizations employ trusted paths for trustworthy, high-assurance connections between security functions of systems and users, including during system logons. The original implementations of trusted paths employed an out-of-band signal to initiate the path, such as using the <BREAK> key, which does not transmit characters that can be spoofed. In later implementations, a key combination that could not be hijacked was used (e.g., the <CTRL> + <ALT> + <DEL> keys). Such key combinations, however, are platform-specific and may not provide a trusted path implementation in every case. The enforcement of trusted communications paths is provided by a specific implementation that meets the reference monitor concept.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-11"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-12",
+    "category": "System and Communications Protection",
+    "name": "Cryptographic Key Establishment and Management",
+    "description": "Establish and manage cryptographic keys when cryptography is employed within the system in accordance with the following key management requirements: requirements.",
+    "implementation": "Cryptographic key management and establishment can be performed using manual procedures or automated mechanisms with supporting manual procedures. Organizations define key management requirements in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines and specify appropriate options, parameters, and levels. Organizations manage trust stores to ensure that only approved trust anchors are part of such trust stores. This includes certificates with visibility external to organizational systems and certificates related to the internal operations of systems. [NIST CMVP](#1acdc775-aafb-4d11-9341-dc6a822e9d38) and [NIST CAVP](#84dc1b0c-acb7-4269-84c4-00dbabacd78c) provide additional information on validated cryptographic modules and algorithms that can be used in cryptographic key management and establishment.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-12"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-13",
+    "category": "System and Communications Protection",
+    "name": "Cryptographic Protection",
+    "description": "Determine the cryptographic uses ; and Implement the following types of cryptography required for each specified cryptographic use: types of cryptography.",
+    "implementation": "Cryptography can be employed to support a variety of security solutions, including the protection of classified information and controlled unclassified information, the provision and implementation of digital signatures, and the enforcement of information separation when authorized individuals have the necessary clearances but lack the necessary formal access approvals. Cryptography can also be used to support random number and hash generation. Generally applicable cryptographic standards include FIPS-validated cryptography and NSA-approved cryptography. For example, organizations that need to protect classified information may specify the use of NSA-approved cryptography. Organizations that need to provision and implement digital signatures may specify the use of FIPS-validated cryptography. Cryptography is implemented in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-13"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-15",
+    "category": "System and Communications Protection",
+    "name": "Collaborative Computing Devices and Applications",
+    "description": "Prohibit remote activation of collaborative computing devices and applications with the following exceptions: exceptions where remote activation is to be allowed ; and Provide an explicit indication of use to users physically present at the devices.",
+    "implementation": "Collaborative computing devices and applications include remote meeting devices and applications, networked white boards, cameras, and microphones. The explicit indication of use includes signals to users when collaborative computing devices and applications are activated.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-15"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-16",
+    "category": "System and Communications Protection",
+    "name": "Transmission of Security and Privacy Attributes",
+    "description": "Associate organization-defined security and privacy attributes with information exchanged between systems and between system components.",
+    "implementation": "Security and privacy attributes can be explicitly or implicitly associated with the information contained in organizational systems or system components. Attributes are abstractions that represent the basic properties or characteristics of an entity with respect to protecting information or the management of personally identifiable information. Attributes are typically associated with internal data structures, including records, buffers, and files within the system. Security and privacy attributes are used to implement access control and information flow control policies; reflect special dissemination, management, or distribution instructions, including permitted uses of personally identifiable information; or support other aspects of the information security and privacy policies. Privacy attributes may be used independently or in conjunction with security attributes.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-16"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-17",
+    "category": "System and Communications Protection",
+    "name": "Public Key Infrastructure Certificates",
+    "description": "Issue public key certificates under an certificate policy or obtain public key certificates from an approved service provider; and Include only approved trust anchors in trust stores or certificate stores managed by the organization.",
+    "implementation": "Public key infrastructure (PKI) certificates are certificates with visibility external to organizational systems and certificates related to the internal operations of systems, such as application-specific time services. In cryptographic systems with a hierarchical structure, a trust anchor is an authoritative source (i.e., a certificate authority) for which trust is assumed and not derived. A root certificate for a PKI system is an example of a trust anchor. A trust store or certificate store maintains a list of trusted root certificates.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-17"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-18",
+    "category": "System and Communications Protection",
+    "name": "Mobile Code",
+    "description": "Define acceptable and unacceptable mobile code and mobile code technologies; and Authorize, monitor, and control the use of mobile code within the system.",
+    "implementation": "Mobile code includes any program, application, or content that can be transmitted across a network (e.g., embedded in an email, document, or website) and executed on a remote system. Decisions regarding the use of mobile code within organizational systems are based on the potential for the code to cause damage to the systems if used maliciously. Mobile code technologies include Java applets, JavaScript, HTML5, WebGL, and VBScript. Usage restrictions and implementation guidelines apply to both the selection and use of mobile code installed on servers and mobile code downloaded and executed on individual workstations and devices, including notebook computers and smart phones. Mobile code policy and procedures address specific actions taken to prevent the development, acquisition, and introduction of unacceptable mobile code within organizational systems, including requiring mobile code to be digitally signed by a trusted source.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-18"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-20",
+    "category": "System and Communications Protection",
+    "name": "Secure Name/Address Resolution Service (Authoritative Source)",
+    "description": "Provide additional data origin authentication and integrity verification artifacts along with the authoritative name resolution data the system returns in response to external name/address resolution queries; and Provide the means to indicate the security status of child zones and (if the child supports secure resolution services) to enable verification of a chain of trust among parent and child domains, when operating as part of a distributed, hierarchical namespace.",
+    "implementation": "Providing authoritative source information enables external clients, including remote Internet clients, to obtain origin authentication and integrity verification assurances for the host/service name to network address resolution information obtained through the service. Systems that provide name and address resolution services include domain name system (DNS) servers. Additional artifacts include DNS Security Extensions (DNSSEC) digital signatures and cryptographic keys. Authoritative data includes DNS resource records. The means for indicating the security status of child zones include the use of delegation signer resource records in the DNS. Systems that use technologies other than the DNS to map between host and service names and network addresses provide other means to assure the authenticity and integrity of response data.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-20"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-21",
+    "category": "System and Communications Protection",
+    "name": "Secure Name/Address Resolution Service (Recursive or Caching Resolver)",
+    "description": "Request and perform data origin authentication and data integrity verification on the name/address resolution responses the system receives from authoritative sources.",
+    "implementation": "Each client of name resolution services either performs this validation on its own or has authenticated channels to trusted validation providers. Systems that provide name and address resolution services for local clients include recursive resolving or caching domain name system (DNS) servers. DNS client resolvers either perform validation of DNSSEC signatures, or clients use authenticated channels to recursive resolvers that perform such validations. Systems that use technologies other than the DNS to map between host and service names and network addresses provide some other means to enable clients to verify the authenticity and integrity of response data.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-21"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-22",
+    "category": "System and Communications Protection",
+    "name": "Architecture and Provisioning for Name/Address Resolution Service",
+    "description": "Ensure the systems that collectively provide name/address resolution service for an organization are fault-tolerant and implement internal and external role separation.",
+    "implementation": "Systems that provide name and address resolution services include domain name system (DNS) servers. To eliminate single points of failure in systems and enhance redundancy, organizations employ at least two authoritative domain name system servers—one configured as the primary server and the other configured as the secondary server. Additionally, organizations typically deploy the servers in two geographically separated network subnetworks (i.e., not located in the same physical facility). For role separation, DNS servers with internal roles only process name and address resolution requests from within organizations (i.e., from internal clients). DNS servers with external roles only process name and address resolution information requests from clients external to organizations (i.e., on external networks, including the Internet). Organizations specify clients that can access authoritative DNS servers in certain roles (e.g., by address ranges and explicit lists).",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-22"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-23",
+    "category": "System and Communications Protection",
+    "name": "Session Authenticity",
+    "description": "Protect the authenticity of communications sessions.",
+    "implementation": "Protecting session authenticity addresses communications protection at the session level, not at the packet level. Such protection establishes grounds for confidence at both ends of communications sessions in the ongoing identities of other parties and the validity of transmitted information. Authenticity protection includes protecting against \"man-in-the-middle\" attacks, session hijacking, and the insertion of false information into sessions.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-23"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-24",
+    "category": "System and Communications Protection",
+    "name": "Fail in Known State",
+    "description": "Fail to a known system state for the following failures on the indicated components while preserving system state information in failure: types of system failures on system components.",
+    "implementation": "Failure in a known state addresses security concerns in accordance with the mission and business needs of organizations. Failure in a known state prevents the loss of confidentiality, integrity, or availability of information in the event of failures of organizational systems or system components. Failure in a known safe state helps to prevent systems from failing to a state that may cause injury to individuals or destruction to property. Preserving system state information facilitates system restart and return to the operational mode with less disruption of mission and business processes.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-24"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-25",
+    "category": "System and Communications Protection",
+    "name": "Thin Nodes",
+    "description": "Employ minimal functionality and information storage on the following system components: system components.",
+    "implementation": "The deployment of system components with minimal functionality reduces the need to secure every endpoint and may reduce the exposure of information, systems, and services to attacks. Reduced or minimal functionality includes diskless nodes and thin client technologies.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-25"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-26",
+    "category": "System and Communications Protection",
+    "name": "Decoys",
+    "description": "Include components within organizational systems specifically designed to be the target of malicious attacks for detecting, deflecting, and analyzing such attacks.",
+    "implementation": "Decoys (i.e., honeypots, honeynets, or deception nets) are established to attract adversaries and deflect attacks away from the operational systems that support organizational mission and business functions. Use of decoys requires some supporting isolation measures to ensure that any deflected malicious code does not infect organizational systems. Depending on the specific usage of the decoy, consultation with the Office of the General Counsel before deployment may be needed.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-26"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-27",
+    "category": "System and Communications Protection",
+    "name": "Platform-independent Applications",
+    "description": "Include within organizational systems the following platform independent applications: platform-independent applications.",
+    "implementation": "Platforms are combinations of hardware, firmware, and software components used to execute software applications. Platforms include operating systems, the underlying computer architectures, or both. Platform-independent applications are applications with the capability to execute on multiple platforms. Such applications promote portability and reconstitution on different platforms. Application portability and the ability to reconstitute on different platforms increase the availability of mission-essential functions within organizations in situations where systems with specific operating systems are under attack.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-27"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-28",
+    "category": "System and Communications Protection",
+    "name": "Protection of Information at Rest",
+    "description": "Protect the [one or more of: confidentiality; integrity] of the following information at rest: information at rest.",
+    "implementation": "Information at rest refers to the state of information when it is not in process or in transit and is located on system components. Such components include internal or external hard disk drives, storage area network devices, or databases. However, the focus of protecting information at rest is not on the type of storage device or frequency of access but rather on the state of the information. Information at rest addresses the confidentiality and integrity of information and covers user information and system information. System-related information that requires protection includes configurations or rule sets for firewalls, intrusion detection and prevention systems, filtering routers, and authentication information. Organizations may employ different mechanisms to achieve confidentiality and integrity protections, including the use of cryptographic mechanisms and file share scanning. Integrity protection can be achieved, for example, by implementing write-once-read-many (WORM) technologies. When adequate protection of information at rest cannot otherwise be achieved, organizations may employ other controls, including frequent scanning to identify malicious code at rest and secure offline storage in lieu of online storage.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-28"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-29",
+    "category": "System and Communications Protection",
+    "name": "Heterogeneity",
+    "description": "Employ a diverse set of information technologies for the following system components in the implementation of the system: system components.",
+    "implementation": "Increasing the diversity of information technologies within organizational systems reduces the impact of potential exploitations or compromises of specific technologies. Such diversity protects against common mode failures, including those failures induced by supply chain attacks. Diversity in information technologies also reduces the likelihood that the means adversaries use to compromise one system component will be effective against other system components, thus further increasing the adversary work factor to successfully complete planned attacks. An increase in diversity may add complexity and management overhead that could ultimately lead to mistakes and unauthorized configurations.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-29"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-30",
+    "category": "System and Communications Protection",
+    "name": "Concealment and Misdirection",
+    "description": "Employ the following concealment and misdirection techniques for systems at time periods to confuse and mislead adversaries: concealment and misdirection techniques.",
+    "implementation": "Concealment and misdirection techniques can significantly reduce the targeting capabilities of adversaries (i.e., window of opportunity and available attack surface) to initiate and complete attacks. For example, virtualization techniques provide organizations with the ability to disguise systems, potentially reducing the likelihood of successful attacks without the cost of having multiple platforms. The increased use of concealment and misdirection techniques and methods—including randomness, uncertainty, and virtualization—may sufficiently confuse and mislead adversaries and subsequently increase the risk of discovery and/or exposing tradecraft. Concealment and misdirection techniques may provide additional time to perform core mission and business functions. The implementation of concealment and misdirection techniques may add to the complexity and management overhead required for the system.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-30"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-31",
+    "category": "System and Communications Protection",
+    "name": "Covert Channel Analysis",
+    "description": "Perform a covert channel analysis to identify those aspects of communications within the system that are potential avenues for covert [one or more of: storage; timing] channels; and Estimate the maximum bandwidth of those channels.",
+    "implementation": "Developers are in the best position to identify potential areas within systems that might lead to covert channels. Covert channel analysis is a meaningful activity when there is the potential for unauthorized information flows across security domains, such as in the case of systems that contain export-controlled information and have connections to external networks (i.e., networks that are not controlled by organizations). Covert channel analysis is also useful for multilevel secure systems, multiple security level systems, and cross-domain systems.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-31"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-32",
+    "category": "System and Communications Protection",
+    "name": "System Partitioning",
+    "description": "Partition the system into system components residing in separate [one of: physical; logical] domains or environments based on circumstances for the physical or logical separation of components.",
+    "implementation": "System partitioning is part of a defense-in-depth protection strategy. Organizations determine the degree of physical separation of system components. Physical separation options include physically distinct components in separate racks in the same room, critical components in separate rooms, and geographical separation of critical components. Security categorization can guide the selection of candidates for domain partitioning. Managed interfaces restrict or prohibit network access and information flow among partitioned system components.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-32"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-34",
+    "category": "System and Communications Protection",
+    "name": "Non-modifiable Executable Programs",
+    "description": "For system components , load and execute: The operating environment from hardware-enforced, read-only media; and The following applications from hardware-enforced, read-only media: applications.",
+    "implementation": "The operating environment for a system contains the code that hosts applications, including operating systems, executives, or virtual machine monitors (i.e., hypervisors). It can also include certain applications that run directly on hardware platforms. Hardware-enforced, read-only media include Compact Disc-Recordable (CD-R) and Digital Versatile Disc-Recordable (DVD-R) disk drives as well as one-time, programmable, read-only memory. The use of non-modifiable storage ensures the integrity of software from the point of creation of the read-only image. The use of reprogrammable, read-only memory can be accepted as read-only media provided that integrity can be adequately protected from the point of initial writing to the insertion of the memory into the system, and there are reliable hardware protections against reprogramming the memory while installed in organizational systems.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-34"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-35",
+    "category": "System and Communications Protection",
+    "name": "External Malicious Code Identification",
+    "description": "Include system components that proactively seek to identify network-based malicious code or malicious websites.",
+    "implementation": "External malicious code identification differs from decoys in [SC-26](#sc-26) in that the components actively probe networks, including the Internet, in search of malicious code contained on external websites. Like decoys, the use of external malicious code identification techniques requires some supporting isolation measures to ensure that any malicious code discovered during the search and subsequently executed does not infect organizational systems. Virtualization is a common technique for achieving such isolation.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-35"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-36",
+    "category": "System and Communications Protection",
+    "name": "Distributed Processing and Storage",
+    "description": "Distribute the following processing and storage components across multiple [one of: physical locations; logical domains]: organization-defined processing and storage components.",
+    "implementation": "Distributing processing and storage across multiple physical locations or logical domains provides a degree of redundancy or overlap for organizations. The redundancy and overlap increase the work factor of adversaries to adversely impact organizational operations, assets, and individuals. The use of distributed processing and storage does not assume a single primary processing or storage location. Therefore, it allows for parallel processing and storage.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-36"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-37",
+    "category": "System and Communications Protection",
+    "name": "Out-of-band Channels",
+    "description": "Employ the following out-of-band channels for the physical delivery or electronic transmission of information, system components, or devices to individuals or systems: out-of-band channels.",
+    "implementation": "Out-of-band channels include local, non-network accesses to systems; network paths physically separate from network paths used for operational traffic; or non-electronic paths, such as the U.S. Postal Service. The use of out-of-band channels is contrasted with the use of in-band channels (i.e., the same channels) that carry routine operational traffic. Out-of-band channels do not have the same vulnerability or exposure as in-band channels. Therefore, the confidentiality, integrity, or availability compromises of in-band channels will not compromise or adversely affect the out-of-band channels. Organizations may employ out-of-band channels in the delivery or transmission of organizational items, including authenticators and credentials; cryptographic key management information; system and data backups; configuration management changes for hardware, firmware, or software; security updates; maintenance information; and malicious code protection updates. For example, cryptographic keys for encrypted files are delivered using a different channel than the file.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-37"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-38",
+    "category": "System and Communications Protection",
+    "name": "Operations Security",
+    "description": "Employ the following operations security controls to protect key organizational information throughout the system development life cycle: operations security controls.",
+    "implementation": "Operations security (OPSEC) is a systematic process by which potential adversaries can be denied information about the capabilities and intentions of organizations by identifying, controlling, and protecting generally unclassified information that specifically relates to the planning and execution of sensitive organizational activities. The OPSEC process involves five steps: identification of critical information, analysis of threats, analysis of vulnerabilities, assessment of risks, and the application of appropriate countermeasures. OPSEC controls are applied to organizational systems and the environments in which those systems operate. OPSEC controls protect the confidentiality of information, including limiting the sharing of information with suppliers, potential suppliers, and other non-organizational elements and individuals. Information critical to organizational mission and business functions includes user identities, element uses, suppliers, supply chain processes, functional requirements, security requirements, system design specifications, testing and evaluation protocols, and security control implementation details.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-38"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-39",
+    "category": "System and Communications Protection",
+    "name": "Process Isolation",
+    "description": "Maintain a separate execution domain for each executing system process.",
+    "implementation": "Systems can maintain separate execution domains for each executing process by assigning each process a separate address space. Each system process has a distinct address space so that communication between processes is performed in a manner controlled through the security functions, and one process cannot modify the executing code of another process. Maintaining separate execution domains for executing processes can be achieved, for example, by implementing separate address spaces. Process isolation technologies, including sandboxing or virtualization, logically separate software and firmware from other software, firmware, and data. Process isolation helps limit the access of potentially untrusted software to other system resources. The capability to maintain separate execution domains is available in commercial operating systems that employ multi-state processor technologies.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-39"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-40",
+    "category": "System and Communications Protection",
+    "name": "Wireless Link Protection",
+    "description": "Protect external and internal organization-defined wireless links from the following signal parameter attacks: organization-defined types of signal parameter attacks or references to sources for such attacks.",
+    "implementation": "Wireless link protection applies to internal and external wireless communication links that may be visible to individuals who are not authorized system users. Adversaries can exploit the signal parameters of wireless links if such links are not adequately protected. There are many ways to exploit the signal parameters of wireless links to gain intelligence, deny service, or spoof system users. Protection of wireless links reduces the impact of attacks that are unique to wireless systems. If organizations rely on commercial service providers for transmission services as commodity items rather than as fully dedicated services, it may not be possible to implement wireless link protections to the extent necessary to meet organizational security requirements.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-40"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-41",
+    "category": "System and Communications Protection",
+    "name": "Port and I/O Device Access",
+    "description": "[one of: physically; logically] disable or remove connection ports or input/output devices on the following systems or system components: systems or system components.",
+    "implementation": "Connection ports include Universal Serial Bus (USB), Thunderbolt, and Firewire (IEEE 1394). Input/output (I/O) devices include compact disc and digital versatile disc drives. Disabling or removing such connection ports and I/O devices helps prevent the exfiltration of information from systems and the introduction of malicious code from those ports or devices. Physically disabling or removing ports and/or devices is the stronger action.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-41"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-42",
+    "category": "System and Communications Protection",
+    "name": "Sensor Capability and Data",
+    "description": "Prohibit [one or more of: the use of devices possessing environmental sensing capabilities in facilities, areas, or systems; the remote activation of environmental sensing capabilities on organizational systems or system components with the following exceptions: exceptions where remote activation of sensors is allowed] ; and Provide an explicit indication of sensor use to group of users.",
+    "implementation": "Sensor capability and data applies to types of systems or system components characterized as mobile devices, such as cellular telephones, smart phones, and tablets. Mobile devices often include sensors that can collect and record data regarding the environment where the system is in use. Sensors that are embedded within mobile devices include microphones, cameras, Global Positioning System (GPS) mechanisms, and accelerometers. While the sensors on mobiles devices provide an important function, if activated covertly, such devices can potentially provide a means for adversaries to learn valuable information about individuals and organizations. For example, remotely activating the GPS function on a mobile device could provide an adversary with the ability to track the movements of an individual. Organizations may prohibit individuals from bringing cellular telephones or digital cameras into certain designated facilities or controlled areas within facilities where classified information is stored or sensitive conversations are taking place.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-42"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-43",
+    "category": "System and Communications Protection",
+    "name": "Usage Restrictions",
+    "description": "Establish usage restrictions and implementation guidelines for the following system components: components ; and Authorize, monitor, and control the use of such components within the system.",
+    "implementation": "Usage restrictions apply to all system components including but not limited to mobile code, mobile devices, wireless access, and wired and wireless peripheral components (e.g., copiers, printers, scanners, optical devices, and other similar technologies). The usage restrictions and implementation guidelines are based on the potential for system components to cause damage to the system and help to ensure that only authorized system use occurs.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-43"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-44",
+    "category": "System and Communications Protection",
+    "name": "Detonation Chambers",
+    "description": "Employ a detonation chamber capability within system, system component, or location.",
+    "implementation": "Detonation chambers, also known as dynamic execution environments, allow organizations to open email attachments, execute untrusted or suspicious applications, and execute Universal Resource Locator requests in the safety of an isolated environment or a virtualized sandbox. Protected and isolated execution environments provide a means of determining whether the associated attachments or applications contain malicious code. While related to the concept of deception nets, the employment of detonation chambers is not intended to maintain a long-term environment in which adversaries can operate and their actions can be observed. Rather, detonation chambers are intended to quickly identify malicious code and either reduce the likelihood that the code is propagated to user environments of operation or prevent such propagation completely.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-44"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-45",
+    "category": "System and Communications Protection",
+    "name": "System Time Synchronization",
+    "description": "Synchronize system clocks within and between systems and system components.",
+    "implementation": "Time synchronization of system clocks is essential for the correct execution of many system services, including identification and authentication processes that involve certificates and time-of-day restrictions as part of access control. Denial of service or failure to deny expired credentials may result without properly synchronized clocks within and between systems and system components. Time is commonly expressed in Coordinated Universal Time (UTC), a modern continuation of Greenwich Mean Time (GMT), or local time with an offset from UTC. The granularity of time measurements refers to the degree of synchronization between system clocks and reference clocks, such as clocks synchronizing within hundreds of milliseconds or tens of milliseconds. Organizations may define different time granularities for system components. Time service can be critical to other security capabilities—such as access control and identification and authentication—depending on the nature of the mechanisms used to support the capabilities.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-45"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-46",
+    "category": "System and Communications Protection",
+    "name": "Cross Domain Policy Enforcement",
+    "description": "Implement a policy enforcement mechanism [one of: physically; logically] between the physical and/or network interfaces for the connecting security domains.",
+    "implementation": "For logical policy enforcement mechanisms, organizations avoid creating a logical path between interfaces to prevent the ability to bypass the policy enforcement mechanism. For physical policy enforcement mechanisms, the robustness of physical isolation afforded by the physical implementation of policy enforcement to preclude the presence of logical covert channels penetrating the security domain may be needed. Contact [ncdsmo@nsa.gov](mailto:ncdsmo@nsa.gov) for more information.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-46"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-47",
+    "category": "System and Communications Protection",
+    "name": "Alternate Communications Paths",
+    "description": "Establish alternate communication paths for system operations organizational command and control.",
+    "implementation": "An incident, whether adversarial- or nonadversarial-based, can disrupt established communications paths used for system operations and organizational command and control. Alternate communications paths reduce the risk of all communications paths being affected by the same incident. To compound the problem, the inability of organizational officials to obtain timely information about disruptions or to provide timely direction to operational elements after a communications path incident, can impact the ability of the organization to respond to such incidents in a timely manner. Establishing alternate communications paths for command and control purposes, including designating alternative decision makers if primary decision makers are unavailable and establishing the extent and limitations of their actions, can greatly facilitate the organization’s ability to continue to operate and take appropriate actions during an incident.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-47"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-48",
+    "category": "System and Communications Protection",
+    "name": "Sensor Relocation",
+    "description": "Relocate sensors and monitoring capabilities to locations under the following conditions or circumstances: conditions or circumstances.",
+    "implementation": "Adversaries may take various paths and use different approaches as they move laterally through an organization (including its systems) to reach their target or as they attempt to exfiltrate information from the organization. The organization often only has a limited set of monitoring and detection capabilities, and they may be focused on the critical or likely infiltration or exfiltration paths. By using communications paths that the organization typically does not monitor, the adversary can increase its chances of achieving its desired goals. By relocating its sensors or monitoring capabilities to new locations, the organization can impede the adversary’s ability to achieve its goals. The relocation of the sensors or monitoring capabilities might be done based on threat information that the organization has acquired or randomly to confuse the adversary and make its lateral transition through the system or organization more challenging.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-48"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-49",
+    "category": "System and Communications Protection",
+    "name": "Hardware-enforced Separation and Policy Enforcement",
+    "description": "Implement hardware-enforced separation and policy enforcement mechanisms between security domains.",
+    "implementation": "System owners may require additional strength of mechanism and robustness to ensure domain separation and policy enforcement for specific types of threats and environments of operation. Hardware-enforced separation and policy enforcement provide greater strength of mechanism than software-enforced separation and policy enforcement.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-49"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-50",
+    "category": "System and Communications Protection",
+    "name": "Software-enforced Separation and Policy Enforcement",
+    "description": "Implement software-enforced separation and policy enforcement mechanisms between security domains.",
+    "implementation": "System owners may require additional strength of mechanism to ensure domain separation and policy enforcement for specific types of threats and environments of operation.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-50"
+    ],
+    "stride": []
+  },
+  {
+    "id": "SC-51",
+    "category": "System and Communications Protection",
+    "name": "Hardware-based Protection",
+    "description": "Employ hardware-based, write-protect for system firmware components ; and Implement specific procedures for authorized individuals to manually disable hardware write-protect for firmware modifications and re-enable the write-protect prior to returning to operational mode.",
+    "implementation": "None.",
+    "references": [
+      "NIST SP 800-53 Rev. 5, SC-51"
+    ],
+    "stride": []
+  }
+]
