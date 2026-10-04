@@ -10,14 +10,13 @@ import html
 import json
 import re
 import sys
-import tempfile
 import time
-from datetime import datetime
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import unquote
 
-from findmythreats import LLM, LLMError, run_pipeline
+from findmythreats import LLM, LLMError, create_run_directory, run_pipeline
 
 ROOT = Path(__file__).parent
 PAGE = ROOT / "web.html"
@@ -93,8 +92,8 @@ class Handler(SimpleHTTPRequestHandler):
         if not (base_url.startswith(("http://", "https://")) and model and suffix and image_bytes):
             return self.reply_json(400, {"error": "Indica URL, modelo y una imagen PNG, JPG o WebP de hasta 20 MB."})
 
-        OUTPUT.mkdir(exist_ok=True)
-        out_dir = Path(tempfile.mkdtemp(prefix=f"web-{datetime.now():%Y%m%d-%H%M%S}-", dir=OUTPUT))
+        filename = Path(unquote(self.headers.get("X-File-Name") or f"diagram{suffix}")).name
+        out_dir = create_run_directory(filename, OUTPUT)
         image = out_dir / f"diagram{suffix}"
         image.write_bytes(image_bytes)
 

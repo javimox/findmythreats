@@ -60,8 +60,8 @@ python findmythreats.py input/architecture.png \
 
 ## Generated files
 
-CLI runs write their results to `output/<diagram-name>/`, or to the directory given with `--out-dir`.
-Web runs create their own directory under `output/`.
+Every analysis creates its own directory under `output/`.  
+CLI supports `--out-dir` to change the output directory.
 
 Each analysis generates:
 
@@ -86,7 +86,7 @@ Web runs also keep the uploaded diagram and a `4_threat_model.html` copy of the 
 
 Its identifiers are internal and do not correspond to a formal security standard.
 
-Normative security standards can also be used with `--controls`, provided they are converted to the same JSON schema.
+Normative security standards can also be used with `--controls`, provided they are converted to the same JSON schema and saved as `controls.json`.
 
 Each control must provide:
 
