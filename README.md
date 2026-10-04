@@ -150,7 +150,7 @@ findmythreats/
 ├── input/
 ├── output/
 └── tests/
-    └── test_findmythreats.py
+    ├── test_findmythreats.py
     └── test_parse_controls.py
 ```
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FindMyThreats</title>
@@ -48,55 +48,55 @@
 
 <main>
   <h1>FindMyThreats</h1>
-  <p class="lead">Modelado de amenazas automático a partir de un diagrama de arquitectura.</p>
+  <p class="lead">Automated threat modeling from an architecture diagram.</p>
 
-  <div class="pipeline" aria-label="Flujo del análisis">
-    <span class="step">Diagrama</span><span class="arrow">→</span><span class="step">Componentes</span>
-    <span class="arrow">→</span><span class="step">Amenazas</span><span class="arrow">→</span>
-    <span class="step">Controles</span><span class="arrow">→</span><span class="step">Informe</span>
+  <div class="pipeline" aria-label="Analysis workflow">
+    <span class="step">Diagram</span><span class="arrow">→</span><span class="step">Components</span>
+    <span class="arrow">→</span><span class="step">Threats</span><span class="arrow">→</span>
+    <span class="step">Controls</span><span class="arrow">→</span><span class="step">Report</span>
   </div>
 
   <form id="form" autocomplete="off">
     <section class="panel">
-      <div class="section-title"><span class="number">1</span><div><h2>Configuración</h2><span class="hint">Servicio y modelo que realizarán el análisis.</span></div></div>
-      <label class="field">URL del LLM
+      <div class="section-title"><span class="number">1</span><div><h2>Configuration</h2><span class="hint">Service and model used for the analysis.</span></div></div>
+      <label class="field">LLM URL
         <input id="llm-url" name="llm-url" type="url" required autocomplete="off" spellcheck="false" value="http://localhost:11434/v1">
-        <span class="hint">Base URL compatible con OpenAI, por ejemplo <code>/v1</code>.</span>
+        <span class="hint">OpenAI-compatible base URL, for example <code>/v1</code>.</span>
       </label>
-      <label class="field">Modelo con visión
-        <input id="llm-model" name="llm-model" type="text" required autocomplete="off" spellcheck="false" placeholder="nombre-del-modelo">
+      <label class="field">Vision model
+        <input id="llm-model" name="llm-model" type="text" required autocomplete="off" spellcheck="false" placeholder="model-name">
       </label>
-      <label class="field">API key <span class="hint">(opcional)</span>
-        <input id="llm-api-key" name="llm-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Déjala vacía si no hace falta">
+      <label class="field">API key <span class="hint">(optional)</span>
+        <input id="llm-api-key" name="llm-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Leave blank if not required">
       </label>
-      <label class="field">Catálogo de controles
+      <label class="field">Control catalog
         <select name="controls" required></select>
-        <span class="hint">Catálogos disponibles en <code>controls/</code>.</span>
+        <span class="hint">Catalogs available in <code>controls/</code>.</span>
       </label>
-      <button>Analizar diagrama</button>
+      <button>Analyze diagram</button>
     </section>
 
     <section class="panel">
-      <div class="section-title"><span class="number">2</span><div><h2>Diagrama de arquitectura</h2><span class="hint">PNG, JPG o WebP · máximo 20 MB.</span></div></div>
+      <div class="section-title"><span class="number">2</span><div><h2>Architecture diagram</h2><span class="hint">PNG, JPG, or WebP · maximum 20 MB.</span></div></div>
       <label class="drop" id="drop">
         <input name="image" type="file" required accept="image/png,image/jpeg,image/webp">
         <span class="upload-mark" id="upload-mark">⇧</span>
-        <img id="preview" alt="Vista previa del diagrama" hidden>
-        <strong id="drop-title">Arrastra aquí el diagrama</strong>
+        <img id="preview" alt="Diagram preview" hidden>
+        <strong id="drop-title">Drop the diagram here</strong>
         <output id="filename"></output>
-        <small id="drop-help">o haz clic para elegirlo</small>
+        <small id="drop-help">or click to choose a file</small>
       </label>
     </section>
   </form>
 
   <section id="progress-panel" class="panel progress-panel" hidden aria-live="polite">
-    <div class="progress-head"><strong>Análisis en curso</strong><span><span id="progress-status">Preparando…</span> · <time id="progress-elapsed">00:00</time></span></div>
+    <div class="progress-head"><strong>Analysis in progress</strong><span><span id="progress-status">Preparing…</span> · <time id="progress-elapsed">00:00</time></span></div>
     <progress id="progress-bar" max="4" value="0"></progress>
     <ol id="progress-steps" class="progress-steps">
-      <li data-step="1">Extracción de componentes</li>
-      <li data-step="2">Identificación de amenazas</li>
-      <li data-step="3">Mapeo a controles</li>
-      <li data-step="4">Generación del informe</li>
+      <li data-step="1">Extracting components</li>
+      <li data-step="2">Identifying threats</li>
+      <li data-step="3">Mapping security controls</li>
+      <li data-step="4">Generating report</li>
     </ol>
   </section>
 
@@ -104,18 +104,18 @@
 
   <section id="result" hidden>
     <div class="success">
-      <div><strong>✓ Análisis completado</strong><small>Los cuatro procesos finalizaron correctamente.</small></div>
+      <div><strong>✓ Analysis complete</strong><small>All four stages completed successfully.</small></div>
       <div id="elapsed"></div>
     </div>
 
     <section class="panel files-panel">
-      <div class="files-head"><div><h2>Ficheros generados</h2><p>Descarga cada artefacto del análisis.</p></div><small id="file-count"></small></div>
+      <div class="files-head"><div><h2>Generated files</h2><p>Download each analysis artifact.</p></div><small id="file-count"></small></div>
       <div id="files"></div>
     </section>
 
     <section class="panel">
-      <div class="report-head"><div><h2>Informe final</h2><span class="hint">Vista renderizada de <code id="report-path">4_threat_model.md</code>.</span></div><a id="open-report" target="_blank">Abrir en nueva pestaña ↗</a></div>
-      <iframe id="report" sandbox title="Informe de modelado de amenazas"></iframe>
+      <div class="report-head"><div><h2>Final report</h2><span class="hint">Rendered view of <code id="report-path">4_threat_model.md</code>.</span></div><a id="open-report" target="_blank">Open in new tab ↗</a></div>
+      <iframe id="report" sandbox title="Threat model report"></iframe>
     </section>
   </section>
 </main>
@@ -136,10 +136,10 @@
   let timerId = null;
   let timerStartedAt = 0;
   const labels = {
-    "1_components.json": ["Arquitectura", "Componentes y flujos"],
-    "2_threats.json": ["Amenazas", "Análisis STRIDE"],
-    "3_mappings.json": ["Controles", "Mapeo y mitigaciones"],
-    "4_threat_model.md": ["Informe", "Documento final Markdown"]
+    "1_components.json": ["Architecture", "Components and flows"],
+    "2_threats.json": ["Threats", "STRIDE analysis"],
+    "3_mappings.json": ["Controls", "Mapping and mitigations"],
+    "4_threat_model.md": ["Report", "Final Markdown document"]
   };
 
   function say(text, error=false){message.textContent=text;message.classList.toggle("error",error)}
@@ -156,7 +156,7 @@
     if(timerStartedAt) progressElapsed.textContent=timerText((Date.now()-timerStartedAt)/1000);
   }
   function resetProgress(){
-    progressPanel.hidden=false; progressBar.value=0; progressStatus.textContent="Preparando…";
+    progressPanel.hidden=false; progressBar.value=0; progressStatus.textContent="Preparing…";
     progressSteps.forEach(step=>step.className="");
   }
   function updateProgress(step,message){
@@ -164,7 +164,7 @@
     progressSteps.forEach((item,index)=>item.className=index+1<step?"done":index+1===step?"current":"");
   }
   function finishProgress(){
-    progressBar.value=4; progressStatus.textContent="Completado";
+    progressBar.value=4; progressStatus.textContent="Complete";
     progressSteps.forEach(step=>step.className="done");
   }
   async function readAnalysis(response){
@@ -182,27 +182,27 @@
       if(done) break;
     }
     if(buffer.trim()){const event=JSON.parse(buffer);if(event.type==="error") throw new Error(event.error);if(event.type==="complete") completed=event}
-    if(!completed) throw new Error("el análisis terminó sin resultado");
+    if(!completed) throw new Error("the analysis ended without a result");
     return completed;
   }
   async function loadControls(){
     try{
       const response=await fetch("/controls"), answer=await response.json();
-      if(!response.ok||!answer.controls.length) throw new Error("no hay catálogos disponibles");
+      if(!response.ok||!answer.controls.length) throw new Error("no control catalogs are available");
       const options=answer.controls.map(name=>{const option=document.createElement("option");option.value=name;option.textContent=name;return option});
       controls.replaceChildren(...options); controls.value=answer.default||answer.controls[0];
     }catch(error){
       controls.disabled=true; form.querySelector("button").disabled=true;
-      say(`No se pudieron cargar los catálogos de controles: ${error.message}`,true);
+      say(`Could not load control catalogs: ${error.message}`,true);
     }
   }
 
   function showPreview(){
     const file=picker.files[0], preview=document.getElementById("preview");
     preview.hidden=!file; document.getElementById("upload-mark").hidden=Boolean(file);
-    document.getElementById("drop-title").textContent=file?"Diagrama seleccionado":"Arrastra aquí el diagrama";
+    document.getElementById("drop-title").textContent=file?"Diagram selected":"Drop the diagram here";
     document.getElementById("filename").textContent=file?file.name:"";
-    document.getElementById("drop-help").textContent=file?`${size(file.size)} · arrastra otro o haz clic para cambiarlo`:`o haz clic para elegirlo`;
+    document.getElementById("drop-help").textContent=file?`${size(file.size)} · drop another file or click to change it`:`or click to choose a file`;
     if(file) preview.src=URL.createObjectURL(file);
   }
   picker.addEventListener("change",showPreview);
@@ -211,7 +211,7 @@
   drop.addEventListener("dragleave",()=>drop.classList.remove("over"));
   drop.addEventListener("drop",event=>{
     drop.classList.remove("over"); const file=event.dataTransfer.files[0];
-    if(!file||!picker.accept.split(",").includes(file.type)) return say("Usa una imagen PNG, JPG o WebP.",true);
+    if(!file||!picker.accept.split(",").includes(file.type)) return say("Use a PNG, JPG, or WebP image.",true);
     picker.files=event.dataTransfer.files; say(""); showPreview();
   });
 
@@ -230,17 +230,17 @@
       const cards=answer.files.map(file=>{
         const [title,desc]=labels[file.name]||[file.name,""]; const card=document.createElement("div"); card.className="file-card";
         const url=`/${answer.run}/${file.name}`;
-        card.innerHTML=`<b>${title}</b><code>${file.name}</code><small>${desc} · ${size(file.size)}</small><a href="${url}" download>Descargar ↓</a>`;
+        card.innerHTML=`<b>${title}</b><code>${file.name}</code><small>${desc} · ${size(file.size)}</small><a href="${url}" download>Download ↓</a>`;
         return card;
       });
       document.getElementById("files").replaceChildren(...cards);
-      document.getElementById("file-count").textContent=`${answer.files.length} ficheros`;
-      document.getElementById("elapsed").textContent=`Procesado en ${duration(answer.elapsed)}`;
+      document.getElementById("file-count").textContent=`${answer.files.length} files`;
+      document.getElementById("elapsed").textContent=`Processed in ${duration(answer.elapsed)}`;
       const report=`/${answer.run}/4_threat_model.html`;
       reportPath.textContent=`output/${answer.run}/4_threat_model.md`;
       document.getElementById("report").src=report; document.getElementById("open-report").href=report;
       result.hidden=false; say(""); result.scrollIntoView({behavior:"smooth"});
-    }catch(error){progressStatus.textContent="Interrumpido";say(`No se pudo analizar el diagrama: ${error.message}`,true)}
+    }catch(error){progressStatus.textContent="Interrupted";say(`Could not analyze the diagram: ${error.message}`,true)}
     finally{stopTimer();button.disabled=false;document.body.classList.remove("running")}
   });
 </script>
